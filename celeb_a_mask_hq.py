@@ -1,3 +1,7 @@
+"""
+This file contains the labels and color palette for the Celeb-A dataset.
+"""
+
 import torch
 from PIL import Image
 

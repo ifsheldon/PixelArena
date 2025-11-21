@@ -1,3 +1,7 @@
+"""
+This generates raw masks that are colorful jpeg using Gemini.
+"""
+
 from google import genai
 from google.genai import types
 from pathlib import Path
