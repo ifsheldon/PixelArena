@@ -16,4 +16,6 @@ dependencies = [
 [dependency-groups]
 dev = [
     "ipykernel>=7.1.0",
+    "poethepoet>=0.37.0",
+    "ruff>=0.14.5",
 ]
