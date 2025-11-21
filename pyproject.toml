@@ -14,8 +14,28 @@ dependencies = [
 ]
 
 [dependency-groups]
-dev = [
-    "ipykernel>=7.1.0",
-    "poethepoet>=0.37.0",
-    "ruff>=0.14.5",
-]
+dev = ["ipykernel>=7.1.0", "poethepoet>=0.37.0", "ruff>=0.14.5"]
+
+[tool.ruff]
+extend-exclude = ["frontend/**"]
+
+[tool.poe.tasks]
+format-python = "ruff format"
+check-python = "ruff check"
+format = ["format-python", "format-frontend"]
+
+[tool.poe.tasks.format-frontend]
+cmd = "bun run format"
+cwd = "frontend"
+
+[tool.poe.tasks.check-frontend]
+cmd = "bun run lint"
+cwd = "frontend"
+
+[tool.poe.tasks.setup-frontend]
+cmd = "bun install"
+cwd = "frontend"
+
+[tool.poe.tasks.run-frontend]
+cmd = "bun dev"
+cwd = "frontend"
