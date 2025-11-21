@@ -14,10 +14,8 @@ type Sample = {
 export async function GET(): Promise<NextResponse> {
   try {
     // Use absolute path to project root test directory
-    const baseDir = path.resolve(
-      "/Users/zhiqiu/offline_code/research_ntu/cv-is-dead/test",
-    );
-    const entries = await fs.readdir(baseDir, { withFileTypes: true });
+    const testResultDir = path.resolve(process.cwd(), "../test");
+    const entries = await fs.readdir(testResultDir, { withFileTypes: true });
 
     const stems = new Set<string>();
 

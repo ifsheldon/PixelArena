@@ -6,38 +6,34 @@ function resolvePath(
   stem: string,
   kind: string,
 ): { abs: string; contentType: string } | undefined {
-  const testDir = path.resolve(
-    "/Users/zhiqiu/offline_code/research_ntu/cv-is-dead/test",
-  );
-  const trainMasksDir = path.resolve(
-    "/Users/zhiqiu/offline_code/research_ntu/cv-is-dead/train/masks",
-  );
+  const testResultDir = path.resolve(process.cwd(), "../test");
+  const evalSetDir = path.resolve(process.cwd(), "../eval-set/");
 
   if (!/^[a-zA-Z0-9_-]+$/.test(stem)) return undefined;
   switch (kind) {
     case "img":
       return {
-        abs: path.join(testDir, `${stem}.jpg`),
+        abs: path.join(testResultDir, `${stem}.jpg`),
         contentType: "image/jpeg",
       };
     case "ref":
       return {
-        abs: path.join(trainMasksDir, `../upscale_masks/${stem}.png`),
+        abs: path.join(evalSetDir, `masks-1024/${stem}.png`),
         contentType: "image/png",
       };
     case "pred0":
       return {
-        abs: path.join(testDir, `${stem}.mask.0.pred.png`),
+        abs: path.join(testResultDir, `${stem}.mask.0.pred.png`),
         contentType: "image/png",
       };
     case "pred1":
       return {
-        abs: path.join(testDir, `${stem}.mask.1.pred.png`),
+        abs: path.join(testResultDir, `${stem}.mask.1.pred.png`),
         contentType: "image/png",
       };
     case "pred2":
       return {
-        abs: path.join(testDir, `${stem}.mask.2.pred.png`),
+        abs: path.join(testResultDir, `${stem}.mask.2.pred.png`),
         contentType: "image/png",
       };
     default:
