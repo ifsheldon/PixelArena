@@ -5,25 +5,7 @@ from PIL import Image
 import asyncio
 import tqdm
 
-client = genai.Client(
-    api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
-).aio
-
-
-def save_binary_file(file_name, data):
-    f = open(file_name, "wb")
-    f.write(data)
-    f.close()
-    print(f"File saved to to: {file_name}")
-
-
-async def gen_mask(
-    original_image_path: Path,
-    color_palette_path: Path,
-    output_dir: Path,
-    attempts: int,
-):
-    prompt = """I want you to do semantic segmentation based on facial features. 
+PROMPT = """I want you to do semantic segmentation based on facial features. 
 
 The label encodings are
 
@@ -58,10 +40,22 @@ Please draw a colorful mask, given the photo (the first image), the color palett
 Note that for the left and right used by the labels, these are with respect to the person in the image, NOT the image itself, so the left facial features of the person are on the right of the image. 
 Check if you have labeled the features on the left of the image to be the right feature labels.
 """
+
+client = genai.Client(
+    api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
+).aio
+
+
+async def gen_mask(
+    original_image_path: Path,
+    color_palette_path: Path,
+    output_dir: Path,
+    attempts: int,
+):
     contents = [
         Image.open(original_image_path).convert("RGB"),
         Image.open(color_palette_path).convert("RGB"),
-        prompt,
+        PROMPT,
     ]
 
     original_file_name = original_image_path.stem
@@ -103,7 +97,7 @@ Check if you have labeled the features on the left of the image to be the right 
 
 
 async def batch_processing():
-    image_dir = Path("./train/images")
+    image_dir = Path("./eval-set/images")
     all_images = list(image_dir.glob("*.jpg"))
     batch_size = 5
     color_palette_path = Path("seg-labels.png")
@@ -113,7 +107,9 @@ async def batch_processing():
     processed_image_names = {image.stem.split(".")[0] for image in processed_images}
     print(f"Processed {len(processed_image_names)} images before")
     all_images_todo = [
-        image for image in all_images if image.stem.split(".")[0] not in processed_image_names
+        image
+        for image in all_images
+        if image.stem.split(".")[0] not in processed_image_names
     ]
     print(f"Processing {len(all_images_todo)} images")
     for i in tqdm.tqdm(range(0, len(all_images_todo), batch_size)):
