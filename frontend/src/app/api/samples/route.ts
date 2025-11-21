@@ -5,49 +5,53 @@ import { NextResponse } from "next/server";
 type Sample = {
   stem: string;
   imageUrl?: string;
-  predUrl?: string;
   refUrl?: string;
+  pred0Url?: string;
+  pred1Url?: string;
+  pred2Url?: string;
 };
 
 export async function GET(): Promise<NextResponse> {
   try {
-    // Use absolute path to project root data/val_preds
+    // Use absolute path to project root test directory
     const baseDir = path.resolve(
-      "/Users/zhiqiu/offline_code/research_ntu/cv-is-dead/test-masks",
+      "/Users/zhiqiu/offline_code/research_ntu/cv-is-dead/test",
     );
     const entries = await fs.readdir(baseDir, { withFileTypes: true });
 
-    const jpgStems = new Set<string>();
-    const refPngStems = new Set<string>();
-    const predPngStems = new Set<string>();
+    const stems = new Set<string>();
 
     for (const entry of entries) {
       if (!entry.isFile()) continue;
       const name = entry.name;
-      if (name.endsWith(".jpg")) {
-        jpgStems.add(name.slice(0, -".jpg".length));
-      } else if (name.endsWith(".pred.png")) {
-        predPngStems.add(name.slice(0, -".pred.png".length));
-      } else if (name.endsWith(".png")) {
-        // Reference mask (exclude .pred.png which handled above)
-        refPngStems.add(name.slice(0, -".png".length));
+      if (name.endsWith(".jpg") && !name.includes(".mask.")) {
+        stems.add(name.slice(0, -".jpg".length));
       }
     }
 
-    const stems = new Set<string>([...jpgStems, ...refPngStems, ...predPngStems]);
     const sorted = Array.from(stems).sort();
 
     const samples: Sample[] = sorted.map((stem) => {
-      const imageUrl = jpgStems.has(stem)
-        ? `/api/file?stem=${encodeURIComponent(stem)}&kind=img`
-        : undefined;
-      const predUrl = predPngStems.has(stem)
-        ? `/api/file?stem=${encodeURIComponent(stem)}&kind=pred`
-        : undefined;
-      const refUrl = refPngStems.has(stem)
-        ? `/api/file?stem=${encodeURIComponent(stem)}&kind=ref`
-        : undefined;
-      return { stem, imageUrl, predUrl, refUrl } satisfies Sample;
+      const imageUrl = `/api/file?stem=${encodeURIComponent(stem)}&kind=img`;
+      const refUrl = `/api/file?stem=${encodeURIComponent(stem)}&kind=ref`;
+      const pred0Url = `/api/file?stem=${encodeURIComponent(stem)}&kind=pred0`;
+      const pred1Url = `/api/file?stem=${encodeURIComponent(stem)}&kind=pred1`;
+      const pred2Url = `/api/file?stem=${encodeURIComponent(stem)}&kind=pred2`;
+      
+      // We're not checking file existence for every variant here to save IO, 
+      // relying on file route to 404 if missing, or we could check.
+      // Given the prompt implies existence, we can just provide URLs.
+      // However, the original code checked existence.
+      // Let's stick to providing URLs. 
+      
+      return { 
+        stem, 
+        imageUrl, 
+        refUrl,
+        pred0Url,
+        pred1Url,
+        pred2Url
+      } as any; // Casting to any because we need to update the Sample type definition but it is local
     });
 
     return NextResponse.json({ samples });

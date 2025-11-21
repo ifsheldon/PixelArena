@@ -8,8 +8,10 @@ import { getLabelByRGB, LABELS } from "@/lib/labels";
 type Sample = {
   stem: string;
   imageUrl?: string;
-  predUrl?: string;
   refUrl?: string;
+  pred0Url?: string;
+  pred1Url?: string;
+  pred2Url?: string;
 };
 
 export default function Home() {
@@ -84,12 +86,19 @@ export default function Home() {
         }
       };
 
-      const [predLabel, refLabel] = await Promise.all([
-        fetchLabelAt(sample.predUrl),
+      // We might want to show what was clicked specifically or all of them.
+      // The original code fetched both pred and ref.
+      // Now we have 3 preds. Fetching all 5 labels (including image?) might be slow/overkill but useful.
+      // Let's fetch Reference + Preds.
+      
+      const [refLabel, p0Label, p1Label, p2Label] = await Promise.all([
         fetchLabelAt(sample.refUrl),
+        fetchLabelAt(sample.pred0Url),
+        fetchLabelAt(sample.pred1Url),
+        fetchLabelAt(sample.pred2Url),
       ]);
 
-      setInfoText(`(${x}, ${y}) → prediction: ${predLabel}, reference: ${refLabel}`);
+      setInfoText(`(${x}, ${y}) → Ref: ${refLabel} | P0: ${p0Label} | P1: ${p1Label} | P2: ${p2Label}`);
     },
     [],
   );
@@ -99,98 +108,87 @@ export default function Home() {
   return (
     <div className="min-h-screen p-6 flex flex-col items-center justify-center gap-6">
       <h1 className="text-xl font-semibold text-center">{title}</h1>
-      <div className="flex flex-row gap-4 items-start justify-center">
-        {current ? (
-          <>
-            <figure className="flex flex-col gap-2 items-center">
+      
+      {current ? (
+        <div className="flex flex-col gap-6">
+          {/* Top Row: Image and Reference */}
+          <div className="flex flex-row gap-4 justify-center">
+             <figure className="flex flex-col gap-2 items-center">
               {current.imageUrl ? (
                 <Image
                   src={current.imageUrl}
                   alt="input"
-                  className="max-w-[33vw] h-auto rounded border"
+                  className="max-w-[30vw] h-auto rounded border"
                   width={512}
                   height={512}
                   draggable={false}
                   unoptimized
                 />
               ) : (
-                <div className="w-[33vw] aspect-square border rounded grid place-items-center text-gray-500">
+                <div className="w-[30vw] aspect-square border rounded grid place-items-center text-gray-500">
                   No image
                 </div>
               )}
               <figcaption className="text-sm text-gray-500">Image</figcaption>
             </figure>
-            <div className="flex flex-col gap-4 items-center">
-              <div className="flex flex-row gap-4 items-start justify-center">
-                <figure className="flex flex-col gap-2 items-center">
-                  {current.predUrl ? (
-                    <Image
-                      src={current.predUrl}
-                      alt="prediction mask"
-                      className="max-w-[33vw] h-auto rounded border cursor-crosshair"
-                      onClick={(e) => handleClickMask(e, current)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          setInfoText("Press mouse to inspect a pixel");
-                        }
-                      }}
-                      role="img"
-                      tabIndex={0}
-                      width={512}
-                      height={512}
-                      draggable={false}
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-[33vw] aspect-square border rounded grid place-items-center text-gray-500">
-                      No prediction
-                    </div>
-                  )}
-                  <figcaption className="text-sm text-gray-500">
-                    Prediction
-                  </figcaption>
-                </figure>
-                <figure className="flex flex-col gap-2 items-center">
-                  {current.refUrl ? (
-                    <Image
-                      src={current.refUrl}
-                      alt="reference mask"
-                      className="max-w-[33vw] h-auto rounded border cursor-crosshair"
-                      onClick={(e) => handleClickMask(e, current)}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault();
-                          setInfoText("Press mouse to inspect a pixel");
-                        }
-                      }}
-                      role="img"
-                      tabIndex={0}
-                      width={512}
-                      height={512}
-                      draggable={false}
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-[33vw] aspect-square border rounded grid place-items-center text-gray-500">
-                      No reference
-                    </div>
-                  )}
-                  <figcaption className="text-sm text-gray-500">
-                    Reference
-                  </figcaption>
-                </figure>
-              </div>
-              <div className="text-sm text-center">
-                Click on Prediction/Reference to inspect class. <br />
-                {infoText}
-              </div>
-            </div>
-          </>
-        ) : (
-          <div className="text-gray-500">No samples found.</div>
-        )}
-      </div>
+
+            <figure className="flex flex-col gap-2 items-center">
+              {current.refUrl ? (
+                <Image
+                  src={current.refUrl}
+                  alt="reference mask"
+                  className="max-w-[30vw] h-auto rounded border cursor-crosshair"
+                  onClick={(e) => handleClickMask(e, current)}
+                  role="img"
+                  width={512}
+                  height={512}
+                  draggable={false}
+                  unoptimized
+                />
+              ) : (
+                <div className="w-[30vw] aspect-square border rounded grid place-items-center text-gray-500">
+                  No reference
+                </div>
+              )}
+              <figcaption className="text-sm text-gray-500">Reference</figcaption>
+            </figure>
+          </div>
+
+          {/* Bottom Row: Predictions */}
+          <div className="flex flex-row gap-4 justify-center">
+             {[current.pred0Url, current.pred1Url, current.pred2Url].map((url, i) => (
+               <figure key={i} className="flex flex-col gap-2 items-center">
+                 {url ? (
+                   <Image
+                     src={url}
+                     alt={`prediction mask ${i}`}
+                     className="max-w-[20vw] h-auto rounded border cursor-crosshair"
+                     onClick={(e) => handleClickMask(e, current)}
+                     role="img"
+                     width={512}
+                     height={512}
+                     draggable={false}
+                     unoptimized
+                   />
+                 ) : (
+                   <div className="w-[20vw] aspect-square border rounded grid place-items-center text-gray-500">
+                     No pred {i}
+                   </div>
+                 )}
+                 <figcaption className="text-sm text-gray-500">Prediction {i}</figcaption>
+               </figure>
+             ))}
+          </div>
+
+          <div className="text-sm text-center">
+            Click on any mask to inspect classes across all masks at that coordinate. <br />
+            {infoText}
+          </div>
+        </div>
+      ) : (
+        <div className="text-gray-500">No samples found.</div>
+      )}
+
       <div className="text-xs text-gray-500 text-center">
         Use ← and → to navigate
       </div>
