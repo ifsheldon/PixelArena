@@ -1,0 +1,61 @@
+import { promises as fs } from "node:fs";
+import path from "node:path";
+import { NextResponse } from "next/server";
+
+function resolvePath(
+  stem: string,
+  kind: string,
+): { abs: string; contentType: string } | undefined {
+  const baseDir = path.resolve(
+    "/Users/zhiqiu/offline_code/research_ntu/cv-is-dead/test-masks",
+  );
+  if (!/^[a-zA-Z0-9_-]+$/.test(stem)) return undefined;
+  switch (kind) {
+    case "img":
+      return {
+        abs: path.join(baseDir, `${stem}.jpg`),
+        contentType: "image/jpeg",
+      };
+    case "pred":
+      return {
+        abs: path.join(baseDir, `${stem}.pred.png`),
+        contentType: "image/png",
+      };
+    case "ref":
+      return {
+        abs: path.join(baseDir, `${stem}.png`),
+        contentType: "image/png",
+      };
+    default:
+      return undefined;
+  }
+}
+
+export async function GET(request: Request): Promise<NextResponse> {
+  const { searchParams } = new URL(request.url);
+  const stem = searchParams.get("stem");
+  const kind = searchParams.get("kind");
+  if (!stem || !kind) {
+    return NextResponse.json(
+      { error: "Missing stem or kind" },
+      { status: 400 },
+    );
+  }
+  const resolved = resolvePath(stem, kind);
+  if (!resolved) {
+    return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
+  }
+  try {
+    const buffer = await fs.readFile(resolved.abs);
+    const arrayBuffer = new ArrayBuffer(buffer.byteLength);
+    new Uint8Array(arrayBuffer).set(buffer);
+    return new NextResponse(arrayBuffer, {
+      headers: {
+        "Content-Type": resolved.contentType,
+        "Cache-Control": "public, max-age=60",
+      },
+    });
+  } catch (_error) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+}
