@@ -35,20 +35,20 @@ export async function GET(): Promise<NextResponse> {
       const pred0Url = `/api/file?stem=${encodeURIComponent(stem)}&kind=pred0`;
       const pred1Url = `/api/file?stem=${encodeURIComponent(stem)}&kind=pred1`;
       const pred2Url = `/api/file?stem=${encodeURIComponent(stem)}&kind=pred2`;
-      
-      // We're not checking file existence for every variant here to save IO, 
+
+      // We're not checking file existence for every variant here to save IO,
       // relying on file route to 404 if missing, or we could check.
       // Given the prompt implies existence, we can just provide URLs.
       // However, the original code checked existence.
-      // Let's stick to providing URLs. 
-      
-      return { 
-        stem, 
-        imageUrl, 
+      // Let's stick to providing URLs.
+
+      return {
+        stem,
+        imageUrl,
         refUrl,
         pred0Url,
         pred1Url,
-        pred2Url
+        pred2Url,
       } as any; // Casting to any because we need to update the Sample type definition but it is local
     });
 
