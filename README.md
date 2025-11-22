@@ -15,6 +15,7 @@ Run frontend: `uv run poe run-frontend`
 A random subset (500 images) of the Celeb-A dataset is used for evaluation.
 
 - Images: `eval-set/images`, `512x512`
+- Images (150): `eval-set/images-150`, `512x512`, a subset (150) of the images, only used for GPT-Image-1 since it's too expensive
 - Reference masks: `eval-set/masks-512`, `512x512`
 - Upscaled reference masks: `eval-set/masks-1024`, `1024x1024`
 
