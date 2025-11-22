@@ -48,18 +48,22 @@ def process_image(image_path):
 
 def main():
     # Search for files matching the pattern in ./test
-    # Pattern: *.mask.[0, 1, 2].raw.jpg
+    # Pattern: *.mask.[0, 1, 2].raw.{jpg, png}
     # We can use glob with a character set for [0-2]
-    search_pattern = os.path.join("./test", "*.mask.[0-2].raw.jpg")
-    files = glob.glob(search_pattern)
+    search_dir = "./gpt-image-test"
+    search_pattern_png = os.path.join(search_dir, "*.mask.[0-2].raw.png")
+    search_pattern_jpg = os.path.join(search_dir, "*.mask.[0-2].raw.jpg")
+    files = glob.glob(search_pattern_png) + glob.glob(search_pattern_jpg)
 
     print(f"Found {len(files)} files to process.")
 
     for file_path in tqdm(files):
         try:
             # Construct output path
-            # Replace .raw.jpg with .pred.png
-            output_path = file_path.replace(".raw.jpg", ".pred.png")
+            # Replace .raw.{jpg, png} with .pred.png
+            output_path = file_path.replace(".raw.jpg", ".pred.png").replace(
+                ".raw.png", ".pred.png"
+            )
 
             # Process
             result_image = process_image(file_path)
