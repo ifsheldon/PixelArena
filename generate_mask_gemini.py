@@ -10,6 +10,12 @@ from PIL import Image
 import asyncio
 import tqdm
 import random
+import logging
+
+logger = logging.getLogger("generate_mask_gemini")
+
+logging.basicConfig(level=logging.WARNING)
+
 
 PROMPT = """I want you to do semantic segmentation based on facial features. 
 
@@ -56,7 +62,9 @@ client1 = genai.Client(
 ).aio
 
 
-def get_client() -> AsyncClient:
+def get_client(idx=None) -> AsyncClient:
+    if idx is not None:
+        return [client0, client1][idx]
     if random.random() < 0.5:
         return client0
     return client1
@@ -80,25 +88,42 @@ async def gen_mask(
 
     original_file_name = original_image_path.stem
 
+    thinking_config = (
+        types.ThinkingConfig(include_thoughts=True)
+        if model == "gemini-3-pro-image-preview"
+        else None
+    )
+    image_size = "1K" if model == "gemini-3-pro-image-preview" else None
+
     for attempt_idx in range(attempts):
         client = get_client()
-        response = await client.models.generate_content(
-            model=model,
-            contents=contents,
-            config=types.GenerateContentConfig(
-                temperature=1.0,
-                response_modalities=[
-                    "IMAGE",
-                    "TEXT",
-                ],
-                image_config=types.ImageConfig(
-                    aspect_ratio="1:1",
-                    image_size="1K",
+
+        try:
+            response = await client.models.generate_content(
+                model=model,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    temperature=1.0,
+                    response_modalities=[
+                        "IMAGE",
+                        "TEXT",
+                    ],
+                    image_config=types.ImageConfig(
+                        aspect_ratio="1:1",
+                        image_size=image_size,
+                    ),
+                    top_p=0.95,
+                    thinking_config=thinking_config,
                 ),
-                top_p=0.95,
-                thinking_config=types.ThinkingConfig(include_thoughts=True),
-            ),
-        )
+            )
+        except Exception as e:
+            logger.warning(f"Generation for {original_file_name} failed: {e}")
+            await asyncio.sleep(3)
+            continue
+
+        if response.parts is None:
+            logger.warning(f"Generation for {original_file_name} failed")
+            continue
 
         for part in response.parts:
             # if part.thought:
