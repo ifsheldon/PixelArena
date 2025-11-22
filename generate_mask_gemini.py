@@ -118,12 +118,11 @@ async def gen_mask(
             )
         except Exception as e:
             logger.warning(f"Generation for {original_file_name} failed: {e}")
-            await asyncio.sleep(3)
-            continue
+            break
 
         if response.parts is None:
             logger.warning(f"Generation for {original_file_name} failed")
-            continue
+            break
 
         for part in response.parts:
             # if part.thought:
