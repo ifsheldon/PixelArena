@@ -14,18 +14,24 @@ import logging
 from prompt import PROMPT
 from asynciolimiter import Limiter
 
-MODEL = "gemini-2.5-flash-image"
-OUTPUT_DIR = Path("nanobanana-test")
+MODEL = "gemini-3-pro-image-preview"
+OUTPUT_DIR = Path("test")
 CLIENTS = [
+    # LF 0
+    genai.Client(
+        api_key="AIzaSyBGNIqo0lAhUArzXJnFgBibDzZ4BF_nmsc",
+    ).aio,
+    # LF 1
     genai.Client(
         api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
     ).aio,
+    # Sizhe 
     genai.Client(
         api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
     ).aio,
 ]
 
-RPM = 480  # tier 1 -> RPM = 500 with a bit buffer
+RPM = 18  # tier 1 -> RPM = 20 with a bit buffer
 LIMITERS = [Limiter(RPM / 60), Limiter(RPM / 60)]
 
 logger = logging.getLogger("generate_mask_gemini")
@@ -70,7 +76,7 @@ async def gen_mask(
     image_size = "1K" if MODEL == "gemini-3-pro-image-preview" else None
 
     for attempt_idx in range(attempts):
-        client = await get_client()
+        client = await get_client(0)
 
         try:
             response = await client.models.generate_content(
