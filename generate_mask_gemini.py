@@ -4,6 +4,7 @@ This generates raw masks that are colorful jpeg using Gemini.
 
 from google import genai
 from google.genai import types
+from google.genai.client import AsyncClient
 from pathlib import Path
 from PIL import Image
 import asyncio
@@ -55,7 +56,7 @@ client1 = genai.Client(
 ).aio
 
 
-def get_client() -> genai.AsyncClient:
+def get_client() -> AsyncClient:
     if random.random() < 0.5:
         return client0
     return client1
