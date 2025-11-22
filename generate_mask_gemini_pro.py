@@ -19,7 +19,7 @@ OUTPUT_DIR = Path("test")
 CLIENTS = [
     # LF 0
     genai.Client(
-        api_key="AIzaSyBGNIqo0lAhUArzXJnFgBibDzZ4BF_nmsc",
+        api_key="AIzaSyD00P48lTw9vZy2wEVGxxbsWJRJrTUVr3o",
     ).aio,
     # LF 1
     genai.Client(
@@ -31,7 +31,7 @@ CLIENTS = [
     ).aio,
 ]
 
-RPM = 18  # tier 1 -> RPM = 20 with a bit buffer
+RPM = 15  # tier 1 -> RPM = 20 with a bit buffer
 LIMITERS = [Limiter(RPM / 60), Limiter(RPM / 60)]
 
 logger = logging.getLogger("generate_mask_gemini")
