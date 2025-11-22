@@ -25,7 +25,7 @@ CLIENTS = [
     genai.Client(
         api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
     ).aio,
-    # Sizhe 
+    # Sizhe
     genai.Client(
         api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
     ).aio,
