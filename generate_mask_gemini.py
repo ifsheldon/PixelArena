@@ -8,6 +8,7 @@ from pathlib import Path
 from PIL import Image
 import asyncio
 import tqdm
+import random
 
 PROMPT = """I want you to do semantic segmentation based on facial features. 
 
@@ -45,9 +46,23 @@ Note that for the left and right used by the labels, these are with respect to t
 Check if you have labeled the features on the left of the image to be the right feature labels.
 """
 
-client = genai.Client(
+client0 = genai.Client(
     api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
 ).aio
+
+client1 = genai.Client(
+    api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
+).aio
+
+
+def get_client() -> genai.AsyncClient:
+    if random.random() < 0.5:
+        return client0
+    return client1
+
+
+model = "gemini-3-pro-image-preview"
+# model = "gemini-2.5-flash-image"
 
 
 async def gen_mask(
@@ -65,8 +80,9 @@ async def gen_mask(
     original_file_name = original_image_path.stem
 
     for attempt_idx in range(attempts):
+        client = get_client()
         response = await client.models.generate_content(
-            model="gemini-3-pro-image-preview",
+            model=model,
             contents=contents,
             config=types.GenerateContentConfig(
                 temperature=1.0,
@@ -100,6 +116,10 @@ async def gen_mask(
         await asyncio.sleep(2)
 
 
+def get_img_id(image_path: Path) -> str:
+    return image_path.stem.split(".")[0]
+
+
 async def batch_processing():
     image_dir = Path("./eval-set/images")
     all_images = list(image_dir.glob("*.jpg"))
@@ -108,12 +128,10 @@ async def batch_processing():
     output_dir = Path("test")
     attempts = 3
     processed_images = list(output_dir.glob(f"*.mask.{attempts - 1}.raw.jpg"))
-    processed_image_names = {image.stem.split(".")[0] for image in processed_images}
+    processed_image_names = {get_img_id(image) for image in processed_images}
     print(f"Processed {len(processed_image_names)} images before")
     all_images_todo = [
-        image
-        for image in all_images
-        if image.stem.split(".")[0] not in processed_image_names
+        image for image in all_images if get_img_id(image) not in processed_image_names
     ]
     print(f"Processing {len(all_images_todo)} images")
     for i in tqdm.tqdm(range(0, len(all_images_todo), batch_size)):
