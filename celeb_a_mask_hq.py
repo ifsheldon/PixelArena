@@ -9,7 +9,7 @@ LABELS = [
     "background",  # 0
     "skin",  # 1
     "nose",  # 2
-    "eye_g",  # 3
+    "eye_glass",  # 3
     "left_eye",  # 4, left eye
     "right_eye",  # 5, right eye
     "left_eyebrow",  # 6, left eyebrow
