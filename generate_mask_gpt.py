@@ -59,8 +59,8 @@ def get_img_id(image_path: Path) -> str:
 async def batch_processing():
     image_dir = Path("./eval-set/images-150")
     all_images = list(image_dir.glob("*.jpg"))
-    color_palette_path = Path("seg-labels.png")
-    output_dir = Path("gpt-image-test")
+    color_palette_path = Path("./label_palettes/seg-labels.png")
+    output_dir = Path("./processed-results/gpt-image-150")
     attempts = 3
     processed_images = list(output_dir.glob(f"*.mask.{attempts - 1}.raw.png"))
     processed_image_names = {get_img_id(image) for image in processed_images}

@@ -21,7 +21,7 @@ MODEL = "gemini-3-pro-image-preview"
 IMAGE_DIR = Path("./eval-set/images-150")
 OUTPUT_DIR = Path("test-shuffle")
 CLIENT_IDX = None
-COLOR_PALETTE_PATH = Path("seg-labels.png")
+COLOR_PALETTE_PATH = Path("./label_palettes/seg-labels.png")
 ATTEMPTS = 3
 # end of parameters
 

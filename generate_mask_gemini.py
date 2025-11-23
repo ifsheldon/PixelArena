@@ -31,7 +31,7 @@ LIMITERS = [Limiter(RPM / 60) for _ in range(len(CLIENTS))]
 logger = logging.getLogger("generate_mask_gemini")
 logging.basicConfig(level=logging.WARNING)
 
-COLOR_PALETTE_PATH = Path("seg-labels.png")
+COLOR_PALETTE_PATH = Path("./label_palettes/seg-labels.png")
 ATTEMPTS = 3
 
 

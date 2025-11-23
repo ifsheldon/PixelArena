@@ -5,7 +5,7 @@ This script checks the results by checking if the expected files are present in 
 import os
 
 SOURCE_DIR = "./eval-set/images-150"
-TARGET_DIR = "./processed-results/gemini-150"
+TARGET_DIR = "./test-shuffle"
 
 
 def find_missing_ids():
