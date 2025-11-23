@@ -13,8 +13,10 @@ import random
 import logging
 from prompt import get_prompt
 from asynciolimiter import Limiter
+from typing import List
 
 MODEL = "gemini-3-pro-image-preview"
+IMAGE_DIR = Path("./eval-set/images")
 OUTPUT_DIR = Path("test")
 CLIENTS = [
     # LF 0
@@ -57,13 +59,14 @@ async def gen_mask(
     color_palette_path: Path,
     output_dir: Path,
     attempts: int,
+    label_colors: List[List[int]] = None,
 ):
     contents = [
         # first image is the original image
         Image.open(original_image_path).convert("RGB"),
         # second image is the color palette, as mentioned in the prompt
         Image.open(color_palette_path).convert("RGB"),
-        get_prompt(),
+        get_prompt(label_colors),
     ]
 
     original_file_name = original_image_path.stem
@@ -126,9 +129,8 @@ def get_img_id(image_path: Path) -> str:
     return image_path.stem.split(".")[0]
 
 
-async def batch_processing():
-    image_dir = Path("./eval-set/images")
-    all_images = list(image_dir.glob("*.jpg"))
+async def batch_processing(label_colors: List[List[int]] = None):
+    all_images = list(IMAGE_DIR.glob("*.jpg"))
     processed_images = list(OUTPUT_DIR.glob(f"*.mask.{ATTEMPTS - 1}.raw.jpg"))
     processed_image_names = {get_img_id(image) for image in processed_images}
     print(f"Processed {len(processed_image_names)} images before")
@@ -138,7 +140,7 @@ async def batch_processing():
     todo_num = len(all_images_todo)
     print(f"Processing {todo_num} images")
     tasks = [
-        gen_mask(image, COLOR_PALETTE_PATH, OUTPUT_DIR, ATTEMPTS)
+        gen_mask(image, COLOR_PALETTE_PATH, OUTPUT_DIR, ATTEMPTS, label_colors)
         for image in all_images_todo
     ]
     await tqdm_asyncio.gather(*tasks, desc="Generating masks", total=todo_num)

@@ -9,11 +9,12 @@ import numpy as np
 from PIL import Image
 from tqdm import tqdm
 from celeb_a_mask_hq import LABEL_COLORS, integer_mask_to_pil
+from typing import List
 
 SEARCH_DIR = "./processed-results/gemini-500"
 
 
-def process_image(image_path):
+def process_image(image_path, label_colors: List[List[int]] = None):
     # Load the image
     mask_image = Image.open(image_path).convert("RGB")
 
@@ -24,7 +25,9 @@ def process_image(image_path):
 
     # Convert label colors to tensor
     # Shape: (N, 3)
-    label_colors_tensor = torch.tensor(LABEL_COLORS).float()
+    if label_colors is None:
+        label_colors = LABEL_COLORS
+    label_colors_tensor = torch.tensor(label_colors).float()
 
     # Flatten image to (H*W, 3) for distance calculation
     flat_image = image_tensor.reshape(-1, 3)
