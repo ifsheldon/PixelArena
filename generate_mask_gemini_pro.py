@@ -19,13 +19,29 @@ import os
 # parameters when it's run in CLI
 MODEL = "gemini-3-pro-image-preview"
 IMAGE_DIR = Path("./eval-set/images-150")
-OUTPUT_DIR = Path("test-shuffle")
+OUTPUT_DIR = Path("./results/gemini-pro-150")
 CLIENT_IDX = None
 COLOR_PALETTE_PATH = Path("./label_palettes/seg-labels.png")
 ATTEMPTS = 3
 # end of parameters
 
 CLIENTS = [
+    # Sizhe
+    genai.Client(
+        api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
+    ).aio,
+    # Sizhe
+    genai.Client(
+        api_key="AIzaSyB1nR_Q1Y-LrbsJnccKXR_gQ7HhsyE8IdA",
+    ).aio,
+    # Sizhe
+    genai.Client(
+        api_key="AIzaSyC-FKheOYGSVmMQasQcd3tkUvIX1JbIrzs",
+    ).aio,
+    # Sizhe
+    genai.Client(
+        api_key="AIzaSyDjU-aRcLrY4wV03PnZ5wN6H8xp_t6N3SA",
+    ).aio,
     # LF project default
     genai.Client(
         api_key="AIzaSyD00P48lTw9vZy2wEVGxxbsWJRJrTUVr3o",
@@ -33,10 +49,6 @@ CLIENTS = [
     # LF project openevolve
     genai.Client(
         api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
-    ).aio,
-    # Sizhe
-    genai.Client(
-        api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
     ).aio,
     # LF project segmentation
     genai.Client(
@@ -154,7 +166,7 @@ async def batch_processing(
 ):
     all_images = list(image_dir.glob("*.jpg"))
     tasks = []
-    
+
     for image in all_images:
         for attempt_idx in range(attempts):
             tasks.append(
