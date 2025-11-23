@@ -154,7 +154,7 @@ async def batch_processing(
 ):
     all_images = list(image_dir.glob("*.jpg"))
     tasks = []
-    
+
     for image in all_images:
         for attempt_idx in range(attempts):
             tasks.append(
