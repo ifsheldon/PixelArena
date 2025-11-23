@@ -17,7 +17,7 @@ SEARCH_DIR = "./test-shuffle"
 logger = logging.getLogger("convert_masks")
 
 
-def process_image(image_path, label_colors: List[List[int]] = None):
+def process_image(image_path, label_colors: List[List[int]] | None):
     # Load the image
     mask_image = Image.open(image_path).convert("RGB")
 
@@ -54,7 +54,9 @@ def process_image(image_path, label_colors: List[List[int]] = None):
     return reconstructed_mask
 
 
-def batch_process_images(search_dir: str):
+def batch_process_images(
+    search_dir: str, label_colors: List[List[int]] | None, force: bool = False
+):
     # Search for files matching the pattern in ./test
     # Pattern: *.mask.[0, 1, 2].raw.{jpg, png}
     # We can use glob with a character set for [0-2]
@@ -75,13 +77,13 @@ def batch_process_images(search_dir: str):
                 ".raw.png", ".pred.png"
             )
 
-            if os.path.exists(output_path):
+            if os.path.exists(output_path) and not force:
                 logger.info(f"Output path {output_path} already exists, skipping.")
                 skip_count += 1
                 continue
 
             # Process
-            result_image = process_image(file_path)
+            result_image = process_image(file_path, label_colors=label_colors)
 
             # Save
             result_image.save(output_path)
@@ -93,4 +95,4 @@ def batch_process_images(search_dir: str):
 
 
 if __name__ == "__main__":
-    batch_process_images(SEARCH_DIR)
+    batch_process_images(SEARCH_DIR, label_colors=None, force=False)
