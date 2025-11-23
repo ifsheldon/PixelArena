@@ -15,3 +15,5 @@ test.ipynb
 processed-results/
 temp/
 .oxen
+results/
+results-bk/
