@@ -10,8 +10,11 @@ from PIL import Image
 from tqdm import tqdm
 from celeb_a_mask_hq import LABEL_COLORS, integer_mask_to_pil
 from typing import List
+import logging
 
-SEARCH_DIR = "./processed-results/gemini-500"
+SEARCH_DIR = "./test-shuffle"
+
+logger = logging.getLogger("convert_masks")
 
 
 def process_image(image_path, label_colors: List[List[int]] = None):
@@ -51,15 +54,18 @@ def process_image(image_path, label_colors: List[List[int]] = None):
     return reconstructed_mask
 
 
-def main():
+def batch_process_images(search_dir: str):
     # Search for files matching the pattern in ./test
     # Pattern: *.mask.[0, 1, 2].raw.{jpg, png}
     # We can use glob with a character set for [0-2]
-    search_pattern_png = os.path.join(SEARCH_DIR, "*.mask.[0-2].raw.png")
-    search_pattern_jpg = os.path.join(SEARCH_DIR, "*.mask.[0-2].raw.jpg")
+    search_pattern_png = os.path.join(search_dir, "*.mask.[0-2].raw.png")
+    search_pattern_jpg = os.path.join(search_dir, "*.mask.[0-2].raw.jpg")
     files = glob.glob(search_pattern_png) + glob.glob(search_pattern_jpg)
 
     print(f"Found {len(files)} files to process.")
+
+    skip_count = 0
+    process_count = 0
 
     for file_path in tqdm(files):
         try:
@@ -69,15 +75,22 @@ def main():
                 ".raw.png", ".pred.png"
             )
 
+            if os.path.exists(output_path):
+                logger.info(f"Output path {output_path} already exists, skipping.")
+                skip_count += 1
+                continue
+
             # Process
             result_image = process_image(file_path)
 
             # Save
             result_image.save(output_path)
-
+            process_count += 1
         except Exception as e:
             print(f"Error processing {file_path}: {e}")
 
+    print(f"Skipped {skip_count} files, processed {process_count} files.")
+
 
 if __name__ == "__main__":
-    main()
+    batch_process_images(SEARCH_DIR)

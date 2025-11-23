@@ -14,6 +14,7 @@ import logging
 from prompt import get_prompt
 from asynciolimiter import Limiter
 from typing import List
+import os
 
 # parameters when it's run in CLI
 MODEL = "gemini-3-pro-image-preview"
@@ -25,17 +26,25 @@ ATTEMPTS = 3
 # end of parameters
 
 CLIENTS = [
-    # LF 0
+    # LF project default
     genai.Client(
         api_key="AIzaSyD00P48lTw9vZy2wEVGxxbsWJRJrTUVr3o",
     ).aio,
-    # LF 1
+    # LF project openevolve
     genai.Client(
         api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
     ).aio,
     # Sizhe
     genai.Client(
         api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
+    ).aio,
+    # LF project segmentation
+    genai.Client(
+        api_key="AIzaSyBGNIqo0lAhUArzXJnFgBibDzZ4BF_nmsc",
+    ).aio,
+    # LF project test
+    genai.Client(
+        api_key="AIzaSyBR4Hu6mfoHmJl9tT2RAZbcUujqsmt3VNA",
     ).aio,
 ]
 
@@ -61,10 +70,17 @@ async def gen_mask(
     original_image_path: Path,
     color_palette_path: Path,
     output_dir: Path,
-    attempts: int,
+    attempt_idx: int,
     label_colors: List[List[int]] | None,
     client_idx: int | None,
 ):
+    original_file_name = original_image_path.stem
+    save_file_path = f"{output_dir}/{original_file_name}.mask.{attempt_idx}.raw.jpg"
+
+    if os.path.exists(save_file_path):
+        logger.info(f"Mask for {original_file_name} already exists at {save_file_path}")
+        return
+
     contents = [
         # first image is the original image
         Image.open(original_image_path).convert("RGB"),
@@ -73,8 +89,6 @@ async def gen_mask(
         get_prompt(label_colors),
     ]
 
-    original_file_name = original_image_path.stem
-
     thinking_config = (
         types.ThinkingConfig(include_thoughts=True)
         if MODEL == "gemini-3-pro-image-preview"
@@ -82,51 +96,48 @@ async def gen_mask(
     )
     image_size = "1K" if MODEL == "gemini-3-pro-image-preview" else None
 
-    for attempt_idx in range(attempts):
+    try:
         client = await get_client(client_idx)
-
-        try:
-            response = await client.models.generate_content(
-                model=MODEL,
-                contents=contents,
-                config=types.GenerateContentConfig(
-                    temperature=1.0,
-                    response_modalities=[
-                        "IMAGE",
-                        "TEXT",
-                    ],
-                    image_config=types.ImageConfig(
-                        aspect_ratio="1:1",
-                        image_size=image_size,
-                    ),
-                    top_p=0.95,
-                    thinking_config=thinking_config,
+        response = await client.models.generate_content(
+            model=MODEL,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                temperature=1.0,
+                response_modalities=[
+                    "IMAGE",
+                    "TEXT",
+                ],
+                image_config=types.ImageConfig(
+                    aspect_ratio="1:1",
+                    image_size=image_size,
                 ),
-            )
+                top_p=0.95,
+                thinking_config=thinking_config,
+            ),
+        )
 
-            if response.parts is None:
-                logger.warning(f"Generation for {original_file_name} failed")
-                break
+        if response.parts is None:
+            logger.warning(f"Generation for {original_file_name} failed")
+            return
 
-            for part in response.parts:
-                # if part.thought:
-                #     if part.text:
-                #         print(part.text)
-                #     elif image := part.as_image():
-                #         image.show()
-                if part.text is not None:
-                    # print(part.text)
-                    pass
-                elif image := part.as_image():
-                    image.save(
-                        f"{output_dir}/{original_file_name}.mask.{attempt_idx}.raw.jpg"
-                    )
-                else:
-                    pass
+        for part in response.parts:
+            # if part.thought:
+            #     if part.text:
+            #         print(part.text)
+            #     elif image := part.as_image():
+            #         image.show()
+            if part.text is not None:
+                # print(part.text)
+                pass
+            elif image := part.as_image():
+                image.save(save_file_path)
+            else:
+                pass
 
-        except Exception as e:
-            logger.warning(f"Generation for {original_file_name} failed: {e}")
-            break
+    except Exception as e:
+        logger.warning(
+            f"Generation for {original_file_name} (attempt {attempt_idx}) failed: {e}"
+        )
 
 
 def get_img_id(image_path: Path) -> str:
@@ -142,21 +153,24 @@ async def batch_processing(
     client_idx: int | None,
 ):
     all_images = list(image_dir.glob("*.jpg"))
-    processed_images = list(output_dir.glob(f"*.mask.{attempts - 1}.raw.jpg"))
-    processed_image_names = {get_img_id(image) for image in processed_images}
-    print(f"Processed {len(processed_image_names)} images before")
-    all_images_todo = [
-        image for image in all_images if get_img_id(image) not in processed_image_names
-    ]
-    todo_num = len(all_images_todo)
-    print(f"Processing {todo_num} images")
-    tasks = [
-        gen_mask(
-            image, color_palette_path, output_dir, attempts, label_colors, client_idx
-        )
-        for image in all_images_todo
-    ]
-    await tqdm_asyncio.gather(*tasks, desc="Generating masks", total=todo_num)
+    tasks = []
+    
+    for image in all_images:
+        for attempt_idx in range(attempts):
+            tasks.append(
+                gen_mask(
+                    original_image_path=image,
+                    color_palette_path=color_palette_path,
+                    output_dir=output_dir,
+                    label_colors=label_colors,
+                    client_idx=client_idx,
+                    attempt_idx=attempt_idx,
+                )
+            )
+
+    await tqdm_asyncio.gather(
+        *tasks, desc="Generating masks", total=len(all_images) * attempts
+    )
 
 
 if __name__ == "__main__":
