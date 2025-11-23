@@ -13,3 +13,4 @@ test/*.png
 test/*.jpg
 test.ipynb
 processed-results/
+temp/
