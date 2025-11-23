@@ -15,9 +15,15 @@ from prompt import get_prompt
 from asynciolimiter import Limiter
 from typing import List
 
+# parameters when it's run in CLI
 MODEL = "gemini-3-pro-image-preview"
-IMAGE_DIR = Path("./eval-set/images")
-OUTPUT_DIR = Path("test")
+IMAGE_DIR = Path("./eval-set/images-150")
+OUTPUT_DIR = Path("test-shuffle")
+CLIENT_IDX = None
+COLOR_PALETTE_PATH = Path("seg-labels.png")
+ATTEMPTS = 3
+# end of parameters
+
 CLIENTS = [
     # LF 0
     genai.Client(
@@ -33,14 +39,11 @@ CLIENTS = [
     ).aio,
 ]
 
-RPM = 15  # tier 1 -> RPM = 20 with a bit buffer
-LIMITERS = [Limiter(RPM / 60), Limiter(RPM / 60)]
+RPM = 12  # tier 1 -> RPM = 20 with a bit buffer
+LIMITERS = [Limiter(RPM / 60) for _ in range(len(CLIENTS))]
 
 logger = logging.getLogger("generate_mask_gemini")
 logging.basicConfig(level=logging.WARNING)
-
-COLOR_PALETTE_PATH = Path("seg-labels.png")
-ATTEMPTS = 3
 
 
 async def get_client(idx=None) -> AsyncClient:
@@ -59,7 +62,8 @@ async def gen_mask(
     color_palette_path: Path,
     output_dir: Path,
     attempts: int,
-    label_colors: List[List[int]] = None,
+    label_colors: List[List[int]] | None,
+    client_idx: int | None,
 ):
     contents = [
         # first image is the original image
@@ -79,7 +83,7 @@ async def gen_mask(
     image_size = "1K" if MODEL == "gemini-3-pro-image-preview" else None
 
     for attempt_idx in range(attempts):
-        client = await get_client(0)
+        client = await get_client(client_idx)
 
         try:
             response = await client.models.generate_content(
@@ -129,9 +133,16 @@ def get_img_id(image_path: Path) -> str:
     return image_path.stem.split(".")[0]
 
 
-async def batch_processing(label_colors: List[List[int]] = None):
-    all_images = list(IMAGE_DIR.glob("*.jpg"))
-    processed_images = list(OUTPUT_DIR.glob(f"*.mask.{ATTEMPTS - 1}.raw.jpg"))
+async def batch_processing(
+    image_dir: Path,
+    output_dir: Path,
+    color_palette_path: Path,
+    attempts: int,
+    label_colors: List[List[int]] | None,
+    client_idx: int | None,
+):
+    all_images = list(image_dir.glob("*.jpg"))
+    processed_images = list(output_dir.glob(f"*.mask.{attempts - 1}.raw.jpg"))
     processed_image_names = {get_img_id(image) for image in processed_images}
     print(f"Processed {len(processed_image_names)} images before")
     all_images_todo = [
@@ -140,11 +151,22 @@ async def batch_processing(label_colors: List[List[int]] = None):
     todo_num = len(all_images_todo)
     print(f"Processing {todo_num} images")
     tasks = [
-        gen_mask(image, COLOR_PALETTE_PATH, OUTPUT_DIR, ATTEMPTS, label_colors)
+        gen_mask(
+            image, color_palette_path, output_dir, attempts, label_colors, client_idx
+        )
         for image in all_images_todo
     ]
     await tqdm_asyncio.gather(*tasks, desc="Generating masks", total=todo_num)
 
 
 if __name__ == "__main__":
-    asyncio.run(batch_processing())
+    asyncio.run(
+        batch_processing(
+            image_dir=IMAGE_DIR,
+            output_dir=OUTPUT_DIR,
+            color_palette_path=COLOR_PALETTE_PATH,
+            attempts=ATTEMPTS,
+            label_colors=None,
+            client_idx=CLIENT_IDX,
+        )
+    )
