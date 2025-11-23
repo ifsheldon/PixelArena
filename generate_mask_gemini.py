@@ -26,7 +26,7 @@ CLIENTS = [
 ]
 
 RPM = 480  # tier 1 -> RPM = 500 with a bit buffer
-LIMITERS = [Limiter(RPM / 60), Limiter(RPM / 60)]
+LIMITERS = [Limiter(RPM / 60) for _ in range(len(CLIENTS))]
 
 logger = logging.getLogger("generate_mask_gemini")
 logging.basicConfig(level=logging.WARNING)
