@@ -2,7 +2,7 @@ from asynciolimiter import Limiter
 from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm_asyncio
 import logging
-from prompt import PROMPT
+from prompt import get_prompt
 from pathlib import Path
 import base64
 import asyncio
@@ -31,7 +31,7 @@ async def gen_mask(
                 # second image is the color palette, as mentioned in the prompt
                 open(color_palette_path, "rb"),
             ],
-            prompt=PROMPT,
+            prompt=get_prompt(),
             model="gpt-image-1",
             n=attempts,
             size="1024x1024",

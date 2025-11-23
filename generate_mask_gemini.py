@@ -11,7 +11,7 @@ import asyncio
 from tqdm.asyncio import tqdm_asyncio
 import random
 import logging
-from prompt import PROMPT
+from prompt import get_prompt
 from asynciolimiter import Limiter
 
 MODEL = "gemini-2.5-flash-image"
@@ -57,7 +57,7 @@ async def gen_mask(
         Image.open(original_image_path).convert("RGB"),
         # second image is the color palette, as mentioned in the prompt
         Image.open(color_palette_path).convert("RGB"),
-        PROMPT,
+        get_prompt(),
     ]
 
     original_file_name = original_image_path.stem
