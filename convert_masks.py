@@ -55,13 +55,16 @@ def process_image(image_path, label_colors: List[List[int]] | None):
 
 
 def batch_process_images(
-    search_dir: str, label_colors: List[List[int]] | None, force: bool = False
+    search_dir: str,
+    label_colors: List[List[int]] | None,
+    attempts: int,
+    force: bool = False,
 ):
     # Search for files matching the pattern in ./test
     # Pattern: *.mask.[0, 1, 2].raw.{jpg, png}
     # We can use glob with a character set for [0-2]
-    search_pattern_png = os.path.join(search_dir, "*.mask.[0-2].raw.png")
-    search_pattern_jpg = os.path.join(search_dir, "*.mask.[0-2].raw.jpg")
+    search_pattern_png = os.path.join(search_dir, f"*.mask.[0-{attempts - 1}].raw.png")
+    search_pattern_jpg = os.path.join(search_dir, f"*.mask.[0-{attempts - 1}].raw.jpg")
     files = glob.glob(search_pattern_png) + glob.glob(search_pattern_jpg)
 
     print(f"Found {len(files)} files to process.")
@@ -95,4 +98,4 @@ def batch_process_images(
 
 
 if __name__ == "__main__":
-    batch_process_images(SEARCH_DIR, label_colors=None, force=False)
+    batch_process_images(SEARCH_DIR, label_colors=None, attempts=3, force=False)
