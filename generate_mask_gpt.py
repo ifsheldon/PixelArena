@@ -6,6 +6,7 @@ from prompt import get_prompt
 from pathlib import Path
 import base64
 import asyncio
+import os
 
 RPM = 42  # tier 3 -> RPM = 50 with a bit buffer
 
@@ -22,8 +23,20 @@ async def gen_mask(
     output_dir: Path,
     attempts: int,
 ):
+    original_file_name = original_image_path.stem
+    todos = []
+    for i in range(attempts):
+        if os.path.exists(f"{output_dir}/{original_file_name}.mask.{i}.raw.png"):
+            continue
+        else:
+            todos.append(i)
+
+    if len(todos) == 0:
+        return
+
     await limiter.wait()
     try:
+        n = len(todos)
         response = await client.images.edit(
             image=[
                 # first image is the original image
@@ -33,7 +46,7 @@ async def gen_mask(
             ],
             prompt=get_prompt(),
             model="gpt-image-1",
-            n=attempts,
+            n=n,
             size="1024x1024",
             quality="high",
             background="opaque",
@@ -43,17 +56,11 @@ async def gen_mask(
         logger.warning(f"Generation for {original_image_path} failed: {e}")
         return
 
-    original_file_name = original_image_path.stem
-
-    for i in range(attempts):
-        image_base64 = response.data[i].b64_json
+    for idx, i in enumerate(todos):
+        image_base64 = response.data[idx].b64_json
         image_bytes = base64.b64decode(image_base64)
         with open(f"{output_dir}/{original_file_name}.mask.{i}.raw.png", "wb") as f:
             f.write(image_bytes)
-
-
-def get_img_id(image_path: Path) -> str:
-    return image_path.stem.split(".")[0]
 
 
 async def batch_processing():
@@ -61,20 +68,14 @@ async def batch_processing():
     all_images = list(image_dir.glob("*.jpg"))
     color_palette_path = Path("./label_palettes/seg-labels.png")
     output_dir = Path("./results/gpt-image-150")
-    attempts = 3
-    processed_images = list(output_dir.glob(f"*.mask.{attempts - 1}.raw.png"))
-    processed_image_names = {get_img_id(image) for image in processed_images}
-    print(f"Processed {len(processed_image_names)} images before")
-    all_images_todo = [
-        image for image in all_images if get_img_id(image) not in processed_image_names
-    ]
-    todo_num = len(all_images_todo)
-    print(f"Processing {todo_num} images")
+    attempts = 5
     tasks = [
         gen_mask(image, color_palette_path, output_dir, attempts)
-        for image in all_images_todo
+        for image in all_images
     ]
-    await tqdm_asyncio.gather(*tasks, desc="Generating masks", total=todo_num)
+    await tqdm_asyncio.gather(
+        *tasks, desc="Generating masks", total=len(all_images) * attempts
+    )
 
 
 if __name__ == "__main__":

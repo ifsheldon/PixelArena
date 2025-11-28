@@ -98,4 +98,4 @@ def batch_process_images(
 
 
 if __name__ == "__main__":
-    batch_process_images(SEARCH_DIR, label_colors=None, attempts=3, force=False)
+    batch_process_images(SEARCH_DIR, label_colors=None, attempts=5, force=False)

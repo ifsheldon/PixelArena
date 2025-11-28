@@ -22,7 +22,7 @@ IMAGE_DIR = Path("./eval-set/images-150")
 OUTPUT_DIR = Path("./results/gemini-150")
 CLIENT_IDX = None
 COLOR_PALETTE_PATH = Path("./label_palettes/seg-labels.png")
-ATTEMPTS = 3
+ATTEMPTS = 5
 # end of parameters
 
 CLIENTS = [
