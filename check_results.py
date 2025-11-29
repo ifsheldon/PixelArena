@@ -5,7 +5,8 @@ This script checks the results by checking if the expected files are present in 
 import os
 
 SOURCE_DIR = "./eval-set/images-150"
-TARGET_DIR = "./test-shuffle"
+TARGET_DIR = "./results/uni-moe-2-image-150"
+ATTEMPTS = 1
 
 
 def find_missing_ids():
@@ -71,7 +72,7 @@ def check_missing_files():
 
     for file_id in expected_ids:
         # Check for 3 raw mask predictions and 3 processed masks
-        for i in range(3):
+        for i in range(ATTEMPTS):
             # Check raw mask
             raw_mask_jpg = f"{file_id}.mask.{i}.raw.jpg"
             raw_mask_png = f"{file_id}.mask.{i}.raw.png"
