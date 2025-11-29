@@ -14,10 +14,15 @@ dependencies = [
     "torchmetrics>=1.8.2",
     "torchvision>=0.24.1",
     "tqdm>=4.67.1",
+    "panopticapi",
+    "pycocotools>=2.0.10",
 ]
 
 [dependency-groups]
 dev = ["ipykernel>=7.1.0", "poethepoet>=0.37.0", "ruff>=0.14.5"]
+
+[tool.uv.sources]
+panopticapi = { path = "./panopticapi" }
 
 [tool.ruff]
 extend-exclude = ["frontend/**"]
@@ -42,3 +47,6 @@ cwd = "frontend"
 [tool.poe.tasks.run-frontend]
 cmd = "bun dev"
 cwd = "frontend"
+
+[tool.poe.tasks.convert-coco-panoptic-to-semantic-segmentation]
+cmd = "uv run python panopticapi/converters/panoptic2semantic_segmentation.py --input_json_file coco-dataset/annotations/panoptic_val2017.json  --segmentations_folder coco-dataset/annotations/panoptic_val2017 --semantic_seg_folder coco-dataset/semantic_segmantation_val2017 --categories_json_file panopticapi/panoptic_coco_categories.json"
