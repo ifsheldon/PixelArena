@@ -8,12 +8,12 @@ wheels/
 
 # Virtual environments
 .venv
-train/
-test/*.png
-test/*.jpg
-test.ipynb
-processed-results/
-temp/
+
+# oxen files
 .oxen
+
+test.ipynb
+temp/
+
 results/
-results-bk/
+coco-dataset/
