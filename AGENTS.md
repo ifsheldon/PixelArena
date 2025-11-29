@@ -1,0 +1,2 @@
+- This project use `uv` to manage Python dependencies. Never use `pip` to install dependencies. Use `uv add` to add dependencies.
+- If you want to run a Python script, use `uv run python <script_name>.py` to run it.
