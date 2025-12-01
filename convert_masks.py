@@ -8,7 +8,7 @@ import torch
 import numpy as np
 from PIL import Image
 from tqdm import tqdm
-from dataset_utils.celeb_a_mask_hq import LABEL_COLORS, integer_mask_to_pil
+from pixel_arena.dataset_utils.celeb_a_mask_hq import LABEL_COLORS, integer_mask_to_pil
 from typing import List
 import logging
 

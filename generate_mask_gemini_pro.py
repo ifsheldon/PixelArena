@@ -11,7 +11,7 @@ import asyncio
 from tqdm.asyncio import tqdm_asyncio
 import random
 import logging
-from dataset_utils.celeb_a_mask_hq import get_prompt
+from pixel_arena.dataset_utils.celeb_a_mask_hq import get_prompt
 from asynciolimiter import Limiter
 from typing import List
 import os
