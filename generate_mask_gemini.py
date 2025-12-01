@@ -20,7 +20,7 @@ if __name__ == "__main__":
             model="gemini-2.5-flash-image",
             image_dir=Path("./eval-set/images-150"),
             output_dir=Path("./results/gemini-150"),
-            color_palette_path=Path("./label_palettes/seg-labels.png"),
+            color_palette_path=Path("./label_palettes/seg_labels_celeb.png"),
             attempts=5,
             label_colors=None,
             save_response=False,
