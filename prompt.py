@@ -1,5 +1,5 @@
 from typing import List
-from celeb_a_mask_hq import LABEL_COLORS, LABELS
+from dataset_utils.celeb_a_mask_hq import LABEL_COLORS, LABELS
 
 PROMPT_TEMPLATE = """I want you to do semantic segmentation based on facial features. 
 
