@@ -185,23 +185,23 @@ LABELS = [
     "window-other",
     None,
     None,
-    "tree-merged",
-    "fence-merged",
-    "ceiling-merged",
-    "sky-other-merged",
-    "cabinet-merged",
-    "table-merged",
-    "floor-other-merged",
-    "pavement-merged",
-    "mountain-merged",
-    "grass-merged",
-    "dirt-merged",
-    "paper-merged",
-    "food-other-merged",
-    "building-other-merged",
-    "rock-merged",
-    "wall-other-merged",
-    "rug-merged",
+    "tree",
+    "fence",
+    "ceiling",
+    "sky-other",
+    "cabinet",
+    "table",
+    "floor-other",
+    "pavement",
+    "mountain",
+    "grass",
+    "dirt",
+    "paper",
+    "food-other",
+    "building-other",
+    "rock",
+    "wall-other",
+    "rug",
 ]
 
 
@@ -391,23 +391,23 @@ LABEL_COLORS = [
     [255, 73, 97],  # id 181: window-other
     [0, 0, 0],  # id 182 color not assigned
     [0, 0, 0],  # id 183 color not assigned
-    [107, 142, 35],  # id 184: tree-merged
-    [190, 153, 153],  # id 185: fence-merged
-    [146, 139, 141],  # id 186: ceiling-merged
-    [70, 130, 180],  # id 187: sky-other-merged
-    [134, 199, 156],  # id 188: cabinet-merged
-    [209, 226, 140],  # id 189: table-merged
-    [96, 36, 108],  # id 190: floor-other-merged
-    [96, 96, 96],  # id 191: pavement-merged
-    [64, 170, 64],  # id 192: mountain-merged
-    [152, 251, 152],  # id 193: grass-merged
-    [208, 229, 228],  # id 194: dirt-merged
-    [206, 186, 171],  # id 195: paper-merged
-    [152, 161, 64],  # id 196: food-other-merged
-    [116, 112, 0],  # id 197: building-other-merged
-    [0, 114, 143],  # id 198: rock-merged
-    [102, 102, 156],  # id 199: wall-other-merged
-    [250, 141, 255],  # id 200: rug-merged
+    [107, 142, 35],  # id 184: tree
+    [190, 153, 153],  # id 185: fence
+    [146, 139, 141],  # id 186: ceiling
+    [70, 130, 180],  # id 187: sky-other
+    [134, 199, 156],  # id 188: cabinet
+    [209, 226, 140],  # id 189: table
+    [96, 36, 108],  # id 190: floor-other
+    [96, 96, 96],  # id 191: pavement
+    [64, 170, 64],  # id 192: mountain
+    [152, 251, 152],  # id 193: grass
+    [208, 229, 228],  # id 194: dirt
+    [206, 186, 171],  # id 195: paper
+    [152, 161, 64],  # id 196: food-other
+    [116, 112, 0],  # id 197: building-other
+    [0, 114, 143],  # id 198: rock
+    [102, 102, 156],  # id 199: wall-other
+    [250, 141, 255],  # id 200: rug
 ]
 
 
