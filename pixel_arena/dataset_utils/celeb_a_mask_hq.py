@@ -109,6 +109,10 @@ Check if you have labeled the features on the left of the image to be the right 
 def get_prompt(label_colors: List[List[int]] = None) -> str:
     if label_colors is None:
         label_colors = LABEL_COLORS
+    else:
+        assert len(label_colors) == len(LABELS), (
+            f"Length of label colors ({len(label_colors)}) should be equal to the number of labels ({len(LABELS)})"
+        )
 
     string = []
     for label, color in zip(LABELS, label_colors):
