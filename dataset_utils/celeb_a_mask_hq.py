@@ -4,6 +4,7 @@ This file contains the labels and color palette for the Celeb-A dataset.
 
 import torch
 from PIL import Image
+from typing import List
 
 LABELS = [
     "background",  # 0
@@ -86,3 +87,33 @@ def integer_mask_to_pil(mask: torch.Tensor) -> Image.Image:
     flat_palette += [0] * (768 - len(flat_palette))
     mask_pil.putpalette(flat_palette)
     return mask_pil
+
+
+PROMPT_TEMPLATE = """I want you to do semantic segmentation based on facial features. 
+
+The label encodings are
+
+```
+{label_encodings}
+```
+
+For your convenience, I've also give you a color palette (the second image) for the label encodings.
+
+Please draw a colorful mask, given the photo (the first image), the color palette and the label encodings. 
+
+Note that for the left and right used by the labels, these are with respect to the person in the image, NOT the image itself, so the left facial features of the person are on the right of the image. 
+Check if you have labeled the features on the left of the image to be the right feature labels.
+"""
+
+
+def get_prompt(label_colors: List[List[int]] = None) -> str:
+    if label_colors is None:
+        label_colors = LABEL_COLORS
+
+    string = []
+    for label, color in zip(LABELS, label_colors):
+        string.append(f"{label}: {color}")
+
+    label_encodings = "\n".join(string)
+    prompt = PROMPT_TEMPLATE.format(label_encodings=label_encodings)
+    return prompt

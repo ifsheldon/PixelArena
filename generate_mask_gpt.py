@@ -2,7 +2,7 @@ from asynciolimiter import Limiter
 from openai import AsyncOpenAI
 from tqdm.asyncio import tqdm_asyncio
 import logging
-from prompt import get_prompt
+from dataset_utils.celeb_a_mask_hq import get_prompt
 from pathlib import Path
 import base64
 import asyncio
