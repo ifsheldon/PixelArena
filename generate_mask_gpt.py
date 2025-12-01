@@ -12,7 +12,7 @@ if __name__ == "__main__":
         batch_gen_mask(
             image_dir=Path("./eval-set/images-150"),
             output_dir=Path("./results/gpt-image-150"),
-            color_palette_path=Path("./label_palettes/seg-labels.png"),
+            color_palette_path=Path("./label_palettes/seg_labels_celeb.png"),
             attempts=5,
             dataset="celeb",
             client=AsyncOpenAI(),
