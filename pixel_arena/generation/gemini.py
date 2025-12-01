@@ -28,7 +28,7 @@ async def gen_mask(
     model: Literal["gemini-3-pro-image-preview", "gemini-2.5-flash-image"],
     dataset: Literal["celeb", "coco"],
     original_image_path: Path,
-    color_palette_path: Path,
+    color_palette_path: Path | List[Path],
     output_dir: Path,
     attempt_idx: int,
     label_colors: List[List[int]] | None,
@@ -46,17 +46,27 @@ async def gen_mask(
     )
 
     if dataset == "celeb":
-        get_prompt = get_prompt_celeb
+        assert isinstance(color_palette_path, Path), (
+            "Color palette path should be a single path for celeb dataset"
+        )
+        contents = [
+            # first image is the original image
+            Image.open(original_image_path).convert("RGB"),
+            # second image is the color palette, as mentioned in the prompt
+            Image.open(color_palette_path).convert("RGB"),
+            get_prompt_celeb(label_colors),
+        ]
     else:
-        get_prompt = get_prompt_coco
-
-    contents = [
-        # first image is the original image
-        Image.open(original_image_path).convert("RGB"),
-        # second image is the color palette, as mentioned in the prompt
-        Image.open(color_palette_path).convert("RGB"),
-        get_prompt(label_colors),
-    ]
+        assert isinstance(color_palette_path, list), (
+            "Color palette path should be a list of paths for coco dataset"
+        )
+        palettes = [Image.open(p).convert("RGB") for p in color_palette_path]
+        contents = [
+            # first image is the original image
+            Image.open(original_image_path).convert("RGB"),
+            *palettes,
+            get_prompt_coco(label_colors),
+        ]
 
     thinking_config = (
         types.ThinkingConfig(include_thoughts=True)
@@ -114,7 +124,7 @@ async def batch_gen_mask(
     dataset: Literal["celeb", "coco"],
     image_dir: Path,
     output_dir: Path,
-    color_palette_path: Path,
+    color_palette_path: Path | List[Path],
     attempts: int,
     label_colors: List[List[int]] | None,
     save_response: bool,
@@ -124,6 +134,14 @@ async def batch_gen_mask(
         clients = [clients]
     limiters = [Limiter(rpm / 60) for _ in range(len(clients))]
     tasks = []
+    if dataset == "celeb":
+        assert isinstance(color_palette_path, Path), (
+            "Color palette path should be a single path for celeb dataset"
+        )
+    else:
+        assert isinstance(color_palette_path, list), (
+            "Color palette path should be a list of paths for coco dataset"
+        )
 
     for image in all_images:
         for attempt_idx in range(attempts):
