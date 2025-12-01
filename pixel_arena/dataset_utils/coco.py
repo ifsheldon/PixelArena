@@ -207,207 +207,207 @@ LABELS = [
 
 # according to panoptic_coco_categories.json in panopticapi/panoptic_coco_categories.json
 LABEL_COLORS = [
-    [0, 0, 0],
-    [220, 20, 60],
-    [119, 11, 32],
-    [0, 0, 142],
-    [0, 0, 230],
-    [106, 0, 228],
-    [0, 60, 100],
-    [0, 80, 100],
-    [0, 0, 70],
-    [0, 0, 192],
-    [250, 170, 30],
-    [100, 170, 30],
+    [0, 0, 0],  # id 0: background
+    [220, 20, 60],  # id 1: person
+    [119, 11, 32],  # id 2: bicycle
+    [0, 0, 142],  # id 3: car
+    [0, 0, 230],  # id 4: motorcycle
+    [106, 0, 228],  # id 5: airplane
+    [0, 60, 100],  # id 6: bus
+    [0, 80, 100],  # id 7: train
+    [0, 0, 70],  # id 8: truck
+    [0, 0, 192],  # id 9: boat
+    [250, 170, 30],  # id 10: traffic light
+    [100, 170, 30],  # id 11: fire hydrant
     [0, 0, 0],  # id 12 color not assigned
-    [220, 220, 0],
-    [175, 116, 175],
-    [250, 0, 30],
-    [165, 42, 42],
-    [255, 77, 255],
-    [0, 226, 252],
-    [182, 182, 255],
-    [0, 82, 0],
-    [120, 166, 157],
-    [110, 76, 0],
-    [174, 57, 255],
-    [199, 100, 0],
-    [72, 0, 118],
+    [220, 220, 0],  # id 13: stop sign
+    [175, 116, 175],  # id 14: parking meter
+    [250, 0, 30],  # id 15: bench
+    [165, 42, 42],  # id 16: bird
+    [255, 77, 255],  # id 17: cat
+    [0, 226, 252],  # id 18: dog
+    [182, 182, 255],  # id 19: horse
+    [0, 82, 0],  # id 20: sheep
+    [120, 166, 157],  # id 21: cow
+    [110, 76, 0],  # id 22: elephant
+    [174, 57, 255],  # id 23: bear
+    [199, 100, 0],  # id 24: zebra
+    [72, 0, 118],  # id 25: giraffe
     [0, 0, 0],  # id 26 color not assigned
-    [255, 179, 240],
-    [0, 125, 92],
+    [255, 179, 240],  # id 27: backpack
+    [0, 125, 92],  # id 28: umbrella
     [0, 0, 0],  # id 29 color not assigned
     [0, 0, 0],  # id 30 color not assigned
-    [209, 0, 151],
-    [188, 208, 182],
-    [0, 220, 176],
-    [255, 99, 164],
-    [92, 0, 73],
-    [133, 129, 255],
-    [78, 180, 255],
-    [0, 228, 0],
-    [174, 255, 243],
-    [45, 89, 255],
-    [134, 134, 103],
-    [145, 148, 174],
-    [255, 208, 186],
-    [197, 226, 255],
+    [209, 0, 151],  # id 31: handbag
+    [188, 208, 182],  # id 32: tie
+    [0, 220, 176],  # id 33: suitcase
+    [255, 99, 164],  # id 34: frisbee
+    [92, 0, 73],  # id 35: skis
+    [133, 129, 255],  # id 36: snowboard
+    [78, 180, 255],  # id 37: sports ball
+    [0, 228, 0],  # id 38: kite
+    [174, 255, 243],  # id 39: baseball bat
+    [45, 89, 255],  # id 40: baseball glove
+    [134, 134, 103],  # id 41: skateboard
+    [145, 148, 174],  # id 42: surfboard
+    [255, 208, 186],  # id 43: tennis racket
+    [197, 226, 255],  # id 44: bottle
     [0, 0, 0],  # id 45 color not assigned
-    [171, 134, 1],
-    [109, 63, 54],
-    [207, 138, 255],
-    [151, 0, 95],
-    [9, 80, 61],
-    [84, 105, 51],
-    [74, 65, 105],
-    [166, 196, 102],
-    [208, 195, 210],
-    [255, 109, 65],
-    [0, 143, 149],
-    [179, 0, 194],
-    [209, 99, 106],
-    [5, 121, 0],
-    [227, 255, 205],
-    [147, 186, 208],
-    [153, 69, 1],
-    [3, 95, 161],
-    [163, 255, 0],
-    [119, 0, 170],
+    [171, 134, 1],  # id 46: wine glass
+    [109, 63, 54],  # id 47: cup
+    [207, 138, 255],  # id 48: fork
+    [151, 0, 95],  # id 49: knife
+    [9, 80, 61],  # id 50: spoon
+    [84, 105, 51],  # id 51: bowl
+    [74, 65, 105],  # id 52: banana
+    [166, 196, 102],  # id 53: apple
+    [208, 195, 210],  # id 54: sandwich
+    [255, 109, 65],  # id 55: orange
+    [0, 143, 149],  # id 56: broccoli
+    [179, 0, 194],  # id 57: carrot
+    [209, 99, 106],  # id 58: hot dog
+    [5, 121, 0],  # id 59: pizza
+    [227, 255, 205],  # id 60: donut
+    [147, 186, 208],  # id 61: cake
+    [153, 69, 1],  # id 62: chair
+    [3, 95, 161],  # id 63: couch
+    [163, 255, 0],  # id 64: potted plant
+    [119, 0, 170],  # id 65: bed
     [0, 0, 0],  # id 66 color not assigned
-    [0, 182, 199],
+    [0, 182, 199],  # id 67: dining table
     [0, 0, 0],  # id 68 color not assigned
     [0, 0, 0],  # id 69 color not assigned
-    [0, 165, 120],
+    [0, 165, 120],  # id 70: toilet
     [0, 0, 0],  # id 71 color not assigned
-    [183, 130, 88],
-    [95, 32, 0],
-    [130, 114, 135],
-    [110, 129, 133],
-    [166, 74, 118],
-    [219, 142, 185],
-    [79, 210, 114],
-    [178, 90, 62],
-    [65, 70, 15],
-    [127, 167, 115],
-    [59, 105, 106],
+    [183, 130, 88],  # id 72: tv
+    [95, 32, 0],  # id 73: laptop
+    [130, 114, 135],  # id 74: mouse
+    [110, 129, 133],  # id 75: remote
+    [166, 74, 118],  # id 76: keyboard
+    [219, 142, 185],  # id 77: cell phone
+    [79, 210, 114],  # id 78: microwave
+    [178, 90, 62],  # id 79: oven
+    [65, 70, 15],  # id 80: toaster
+    [127, 167, 115],  # id 81: sink
+    [59, 105, 106],  # id 82: refrigerator
     [0, 0, 0],  # id 83 color not assigned
-    [142, 108, 45],
-    [196, 172, 0],
-    [95, 54, 80],
-    [128, 76, 255],
-    [201, 57, 1],
-    [246, 0, 122],
-    [191, 162, 208],
+    [142, 108, 45],  # id 84: book
+    [196, 172, 0],  # id 85: clock
+    [95, 54, 80],  # id 86: vase
+    [128, 76, 255],  # id 87: scissors
+    [201, 57, 1],  # id 88: teddy bear
+    [246, 0, 122],  # id 89: hair drier
+    [191, 162, 208],  # id 90: toothbrush
     [0, 0, 0],  # id 91 color not assigned
-    [255, 255, 128],
-    [147, 211, 203],
+    [255, 255, 128],  # id 92: banner
+    [147, 211, 203],  # id 93: blanket
     [0, 0, 0],  # id 94 color not assigned
-    [150, 100, 100],
+    [150, 100, 100],  # id 95: bridge
     [0, 0, 0],  # id 96 color not assigned
     [0, 0, 0],  # id 97 color not assigned
     [0, 0, 0],  # id 98 color not assigned
     [0, 0, 0],  # id 99 color not assigned
-    [168, 171, 172],
+    [168, 171, 172],  # id 100: cardboard
     [0, 0, 0],  # id 101 color not assigned
     [0, 0, 0],  # id 102 color not assigned
     [0, 0, 0],  # id 103 color not assigned
     [0, 0, 0],  # id 104 color not assigned
     [0, 0, 0],  # id 105 color not assigned
     [0, 0, 0],  # id 106 color not assigned
-    [146, 112, 198],
+    [146, 112, 198],  # id 107: counter
     [0, 0, 0],  # id 108 color not assigned
-    [210, 170, 100],
+    [210, 170, 100],  # id 109: curtain
     [0, 0, 0],  # id 110 color not assigned
     [0, 0, 0],  # id 111 color not assigned
-    [92, 136, 89],
+    [92, 136, 89],  # id 112: door-stuff
     [0, 0, 0],  # id 113 color not assigned
     [0, 0, 0],  # id 114 color not assigned
     [0, 0, 0],  # id 115 color not assigned
     [0, 0, 0],  # id 116 color not assigned
     [0, 0, 0],  # id 117 color not assigned
-    [218, 88, 184],
-    [241, 129, 0],
+    [218, 88, 184],  # id 118: floor-wood
+    [241, 129, 0],  # id 119: flower
     [0, 0, 0],  # id 120 color not assigned
     [0, 0, 0],  # id 121 color not assigned
-    [217, 17, 255],
+    [217, 17, 255],  # id 122: fruit
     [0, 0, 0],  # id 123 color not assigned
     [0, 0, 0],  # id 124 color not assigned
-    [124, 74, 181],
+    [124, 74, 181],  # id 125: gravel
     [0, 0, 0],  # id 126 color not assigned
     [0, 0, 0],  # id 127 color not assigned
-    [70, 70, 70],
+    [70, 70, 70],  # id 128: house
     [0, 0, 0],  # id 129 color not assigned
-    [255, 228, 255],
+    [255, 228, 255],  # id 130: light
     [0, 0, 0],  # id 131 color not assigned
     [0, 0, 0],  # id 132 color not assigned
-    [154, 208, 0],
+    [154, 208, 0],  # id 133: mirror-stuff
     [0, 0, 0],  # id 134 color not assigned
     [0, 0, 0],  # id 135 color not assigned
     [0, 0, 0],  # id 136 color not assigned
     [0, 0, 0],  # id 137 color not assigned
-    [193, 0, 92],
+    [193, 0, 92],  # id 138: net
     [0, 0, 0],  # id 139 color not assigned
     [0, 0, 0],  # id 140 color not assigned
-    [76, 91, 113],
+    [76, 91, 113],  # id 141: pillow
     [0, 0, 0],  # id 142 color not assigned
     [0, 0, 0],  # id 143 color not assigned
-    [255, 180, 195],
-    [106, 154, 176],
+    [255, 180, 195],  # id 144: platform
+    [106, 154, 176],  # id 145: playingfield
     [0, 0, 0],  # id 146 color not assigned
-    [230, 150, 140],
-    [60, 143, 255],
-    [128, 64, 128],
+    [230, 150, 140],  # id 147: railroad
+    [60, 143, 255],  # id 148: river
+    [128, 64, 128],  # id 149: road
     [0, 0, 0],  # id 150 color not assigned
-    [92, 82, 55],
+    [92, 82, 55],  # id 151: roof
     [0, 0, 0],  # id 152 color not assigned
     [0, 0, 0],  # id 153 color not assigned
-    [254, 212, 124],
-    [73, 77, 174],
-    [255, 160, 98],
+    [254, 212, 124],  # id 154: sand
+    [73, 77, 174],  # id 155: sea
+    [255, 160, 98],  # id 156: shelf
     [0, 0, 0],  # id 157 color not assigned
     [0, 0, 0],  # id 158 color not assigned
-    [255, 255, 255],
+    [255, 255, 255],  # id 159: snow
     [0, 0, 0],  # id 160 color not assigned
-    [104, 84, 109],
+    [104, 84, 109],  # id 161: stairs
     [0, 0, 0],  # id 162 color not assigned
     [0, 0, 0],  # id 163 color not assigned
     [0, 0, 0],  # id 164 color not assigned
     [0, 0, 0],  # id 165 color not assigned
-    [169, 164, 131],
+    [169, 164, 131],  # id 166: tent
     [0, 0, 0],  # id 167 color not assigned
-    [225, 199, 255],
+    [225, 199, 255],  # id 168: towel
     [0, 0, 0],  # id 169 color not assigned
     [0, 0, 0],  # id 170 color not assigned
-    [137, 54, 74],
+    [137, 54, 74],  # id 171: wall-brick
     [0, 0, 0],  # id 172 color not assigned
     [0, 0, 0],  # id 173 color not assigned
     [0, 0, 0],  # id 174 color not assigned
-    [135, 158, 223],
-    [7, 246, 231],
-    [107, 255, 200],
-    [58, 41, 149],
+    [135, 158, 223],  # id 175: wall-stone
+    [7, 246, 231],  # id 176: wall-tile
+    [107, 255, 200],  # id 177: wall-wood
+    [58, 41, 149],  # id 178: water-other
     [0, 0, 0],  # id 179 color not assigned
-    [183, 121, 142],
-    [255, 73, 97],
+    [183, 121, 142],  # id 180: window-blind
+    [255, 73, 97],  # id 181: window-other
     [0, 0, 0],  # id 182 color not assigned
     [0, 0, 0],  # id 183 color not assigned
-    [107, 142, 35],
-    [190, 153, 153],
-    [146, 139, 141],
-    [70, 130, 180],
-    [134, 199, 156],
-    [209, 226, 140],
-    [96, 36, 108],
-    [96, 96, 96],
-    [64, 170, 64],
-    [152, 251, 152],
-    [208, 229, 228],
-    [206, 186, 171],
-    [152, 161, 64],
-    [116, 112, 0],
-    [0, 114, 143],
-    [102, 102, 156],
-    [250, 141, 255],
+    [107, 142, 35],  # id 184: tree-merged
+    [190, 153, 153],  # id 185: fence-merged
+    [146, 139, 141],  # id 186: ceiling-merged
+    [70, 130, 180],  # id 187: sky-other-merged
+    [134, 199, 156],  # id 188: cabinet-merged
+    [209, 226, 140],  # id 189: table-merged
+    [96, 36, 108],  # id 190: floor-other-merged
+    [96, 96, 96],  # id 191: pavement-merged
+    [64, 170, 64],  # id 192: mountain-merged
+    [152, 251, 152],  # id 193: grass-merged
+    [208, 229, 228],  # id 194: dirt-merged
+    [206, 186, 171],  # id 195: paper-merged
+    [152, 161, 64],  # id 196: food-other-merged
+    [116, 112, 0],  # id 197: building-other-merged
+    [0, 114, 143],  # id 198: rock-merged
+    [102, 102, 156],  # id 199: wall-other-merged
+    [250, 141, 255],  # id 200: rug-merged
 ]
 
 
