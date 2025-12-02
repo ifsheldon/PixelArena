@@ -2,7 +2,6 @@
 This generates raw masks that are colorful jpeg using Gemini.
 """
 
-from google import genai
 from pixel_arena.generation.gemini import batch_gen_mask
 from pathlib import Path
 import asyncio
