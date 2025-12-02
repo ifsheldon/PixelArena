@@ -1,7 +1,7 @@
 from typing import List
 
 LABELS = [
-    "background",
+    "other",
     "person",
     "bicycle",
     "car",
@@ -207,7 +207,7 @@ LABELS = [
 
 # according to panoptic_coco_categories.json in panopticapi/panoptic_coco_categories.json
 LABEL_COLORS = [
-    [0, 0, 0],  # id 0: background
+    [0, 0, 0],  # id 0: other
     [220, 20, 60],  # id 1: person
     [119, 11, 32],  # id 2: bicycle
     [0, 0, 142],  # id 3: car
@@ -411,7 +411,7 @@ LABEL_COLORS = [
 ]
 
 
-PROMPT_TEMPLATE = """I want you to do semantic segmentation based on facial features. 
+PROMPT_TEMPLATE = """I want you to do semantic segmentation based on the given category labels.
 
 The label encodings are
 
@@ -421,6 +421,8 @@ The label encodings are
 
 Please draw a colorful mask, given the photo (the first image), the color palette and the label encodings. 
 For your convenience, I've also give you a color palette (the rest of the images) for the label encodings.
+
+You can first recognize all categories of all subjects in the first image and then draw the mask. Note that the first category `other` is used only when there're no related category labels for a subject in the image.
 """
 
 
