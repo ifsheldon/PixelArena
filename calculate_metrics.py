@@ -72,10 +72,10 @@ celeb_runs = [
     gemini_pro_shuffled_run_celeb,
     gemini_run_celeb,
     gpt_run_celeb,
-    sam3_run_celeb,
-    segface_run_celeb,
     uni_moe_2_image_run_celeb,
     uni_moe_2_omni_run_celeb,
+    sam3_run_celeb,
+    segface_run_celeb,
 ]
 
 gemini_pro_run_coco = RunInfo(
