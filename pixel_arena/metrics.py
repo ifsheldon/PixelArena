@@ -48,7 +48,7 @@ class RunInfo:
         else:
             image_path = Path("./eval-set/coco/images-150/")
             assert image_path.exists()
-
+        self.image_path = image_path
         image_ids = {image.stem for image in image_path.glob("*.jpg")}
         self.image_ids = sorted(list(image_ids))
 
@@ -66,6 +66,9 @@ class RunInfo:
             self.class_max = 200
             self.label_num = 201
         assert self.ref_masks_path.exists()
+
+    def get_original_image(self, image_id: str) -> Image.Image:
+        return get_image(self.image_path / f"{image_id}.jpg", return_image=True)
 
     def get_mask_ref(
         self, *, image_id: str, return_image: bool
