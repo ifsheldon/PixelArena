@@ -9,8 +9,9 @@ from pixel_arena.image_processing import mask_raw_to_pmode
 from typing import List, Literal
 import logging
 
-SEARCH_DIR = "./test-shuffle"
+SEARCH_DIR = "./results/celeb/uni-moe-2-omni-150"
 DATASET = "celeb"
+ATTEMPTS = 1
 
 logger = logging.getLogger("convert_masks")
 
@@ -60,5 +61,5 @@ def batch_process_images(
 
 if __name__ == "__main__":
     batch_process_images(
-        SEARCH_DIR, dataset=DATASET, label_colors=None, attempts=5, force=False
+        SEARCH_DIR, dataset=DATASET, label_colors=None, attempts=ATTEMPTS, force=False
     )
