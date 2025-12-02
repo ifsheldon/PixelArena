@@ -3,30 +3,113 @@
 import Image from "next/image";
 import type { MouseEvent } from "react";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { getLabelByRGB, LABELS } from "@/lib/labels";
+import {
+  DATASET_OPTIONS,
+  type DatasetId,
+  DEFAULT_DATASET,
+  getDatasetLabel,
+} from "@/lib/datasets";
+import { getDatasetLabels, getLabelByRGB } from "@/lib/labels";
 
 type Sample = {
   stem: string;
-  imageUrl?: string;
-  refUrl?: string;
-  pred0Url?: string;
-  pred1Url?: string;
-  pred2Url?: string;
+  imageUrl: string;
+  refUrl: string;
+  predUrls: string[];
+};
+
+type SamplesResponse = {
+  dataset: DatasetId;
+  run: string | null;
+  runs: string[];
+  samples: Sample[];
 };
 
 export default function Home() {
   const [samples, setSamples] = useState<Sample[]>([]);
   const [idx, setIdx] = useState(0);
   const [infoText, setInfoText] = useState<string>("");
+  const [selectedDataset, setSelectedDataset] =
+    useState<DatasetId>(DEFAULT_DATASET);
+  const [selectedRun, setSelectedRun] = useState<string | null>(null);
+  const [activeDataset, setActiveDataset] =
+    useState<DatasetId>(DEFAULT_DATASET);
+  const [activeRun, setActiveRun] = useState<string | null>(null);
+  const [availableRuns, setAvailableRuns] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/samples")
-      .then((r) => r.json())
-      .then((d) => setSamples(d.samples ?? []))
-      .catch(() => setSamples([]));
-  }, []);
+    let cancelled = false;
+    const controller = new AbortController();
+
+    const loadSamples = async () => {
+      setLoading(true);
+      setError(null);
+      const params = new URLSearchParams({ dataset: selectedDataset });
+      if (selectedRun) params.set("run", selectedRun);
+      try {
+        const response = await fetch(`/api/samples?${params.toString()}`, {
+          signal: controller.signal,
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to load samples (${response.status})`);
+        }
+        const data: SamplesResponse = await response.json();
+        if (cancelled) return;
+        setSamples(data.samples ?? []);
+        setAvailableRuns(data.runs ?? []);
+        setActiveRun(data.run ?? null);
+        setActiveDataset(data.dataset);
+        setIdx(0);
+        setInfoText("");
+        if (
+          selectedRun &&
+          data.run &&
+          selectedRun !== data.run &&
+          data.runs?.includes(data.run)
+        ) {
+          setSelectedRun(data.run);
+        }
+      } catch (err) {
+        if (cancelled) return;
+        if (err instanceof DOMException && err.name === "AbortError") {
+          return;
+        }
+        setSamples([]);
+        setAvailableRuns([]);
+        setActiveRun(null);
+        setError(err instanceof Error ? err.message : "Failed to load samples");
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadSamples();
+    return () => {
+      cancelled = true;
+      controller.abort();
+    };
+  }, [selectedDataset, selectedRun]);
 
   const current = samples[idx] as Sample | undefined;
+  const datasetName = getDatasetLabel(activeDataset);
+  const labelList = useMemo(
+    () => getDatasetLabels(activeDataset),
+    [activeDataset],
+  );
+  const labelSummary =
+    labelList.length <= 40
+      ? labelList.join(", ")
+      : `${labelList.slice(0, 40).join(", ")}, …`;
+  const headingParts = [
+    datasetName,
+    activeRun ?? undefined,
+    current?.stem ?? undefined,
+  ].filter(Boolean);
+  const title = headingParts.join(" · ") || "No data";
 
   const onKey = useCallback(
     (e: KeyboardEvent) => {
@@ -78,38 +161,106 @@ export default function Home() {
           const sampleY = Math.min(Math.max(y, 0), bitmap.height - 1);
           const data = ctx.getImageData(sampleX, sampleY, 1, 1).data;
           bitmap.close();
-          const match = getLabelByRGB(data[0], data[1], data[2]);
+          const match = getLabelByRGB(activeDataset, data[0], data[1], data[2]);
           return match ? `${match.index}: ${match.name}` : "unknown";
         } catch (error) {
           console.error("Failed to sample label", error);
           return "error";
         }
       };
-
-      // We might want to show what was clicked specifically or all of them.
-      // The original code fetched both pred and ref.
-      // Now we have 3 preds. Fetching all 5 labels (including image?) might be slow/overkill but useful.
-      // Let's fetch Reference + Preds.
-
-      const [refLabel, p0Label, p1Label, p2Label] = await Promise.all([
-        fetchLabelAt(sample.refUrl),
-        fetchLabelAt(sample.pred0Url),
-        fetchLabelAt(sample.pred1Url),
-        fetchLabelAt(sample.pred2Url),
-      ]);
+      const labelEntries = [
+        ["Ref", await fetchLabelAt(sample.refUrl)],
+        ...(await Promise.all(
+          (sample.predUrls ?? []).map(async (url, i) => [
+            `P${i}`,
+            await fetchLabelAt(url),
+          ]),
+        )),
+      ];
 
       setInfoText(
-        `(${x}, ${y}) → Ref: ${refLabel} | P0: ${p0Label} | P1: ${p1Label} | P2: ${p2Label}`,
+        `(${x}, ${y}) → ${labelEntries
+          .map(([tag, value]) => `${tag}: ${value}`)
+          .join(" | ")}`,
       );
     },
-    [],
+    [activeDataset],
   );
 
-  const title = useMemo(() => current?.stem ?? "No data", [current]);
+  const handleDatasetChange = (dataset: DatasetId) => {
+    if (dataset === selectedDataset) return;
+    setSelectedDataset(dataset);
+    setSelectedRun(null);
+    setAvailableRuns([]);
+    setActiveRun(null);
+    setSamples([]);
+    setInfoText("");
+    setError(null);
+    setIdx(0);
+  };
+
+  const handleRunChange = (runValue: string) => {
+    setSelectedRun(runValue || null);
+    setIdx(0);
+    setInfoText("");
+  };
 
   return (
     <div className="min-h-screen p-6 flex flex-col items-center justify-center gap-6">
       <h1 className="text-xl font-semibold text-center">{title}</h1>
+
+      <div className="flex flex-wrap items-end justify-center gap-4">
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-xs uppercase tracking-wide text-gray-500">
+            Dataset
+          </span>
+          <select
+            className="border rounded px-3 py-1"
+            value={selectedDataset}
+            onChange={(event) =>
+              handleDatasetChange(event.target.value as DatasetId)
+            }
+          >
+            {DATASET_OPTIONS.map((option) => (
+              <option key={option.id} value={option.id}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+        </label>
+
+        <label className="flex flex-col gap-1 text-sm">
+          <span className="text-xs uppercase tracking-wide text-gray-500">
+            Run
+          </span>
+          <select
+            className="border rounded px-3 py-1"
+            value={selectedRun ?? activeRun ?? ""}
+            onChange={(event) => handleRunChange(event.target.value)}
+            disabled={!availableRuns.length}
+          >
+            {availableRuns.length ? (
+              availableRuns.map((run) => (
+                <option key={run} value={run}>
+                  {run}
+                </option>
+              ))
+            ) : (
+              <option value="">
+                {loading ? "Loading runs..." : "No runs found"}
+              </option>
+            )}
+          </select>
+        </label>
+
+        <div className="text-sm text-gray-500 min-w-[10rem] text-center">
+          {loading ? "Loading samples…" : `${samples.length} samples`}
+        </div>
+      </div>
+
+      {error ? (
+        <div className="text-sm text-red-500 text-center">{error}</div>
+      ) : null}
 
       {current ? (
         <div className="flex flex-col gap-6">
@@ -159,32 +310,31 @@ export default function Home() {
           </div>
 
           {/* Bottom Row: Predictions */}
-          <div className="flex flex-row gap-4 justify-center">
-            {[current.pred0Url, current.pred1Url, current.pred2Url].map(
-              (url, i) => (
-                <figure key={i} className="flex flex-col gap-2 items-center">
-                  {url ? (
-                    <Image
-                      src={url}
-                      alt={`prediction mask ${i}`}
-                      className="max-w-[20vw] h-auto rounded border cursor-crosshair"
-                      onClick={(e) => handleClickMask(e, current)}
-                      role="img"
-                      width={512}
-                      height={512}
-                      draggable={false}
-                      unoptimized
-                    />
-                  ) : (
-                    <div className="w-[20vw] aspect-square border rounded grid place-items-center text-gray-500">
-                      No pred {i}
-                    </div>
-                  )}
+          <div className="flex flex-row gap-4 justify-center flex-wrap">
+            {(current.predUrls ?? []).length ? (
+              current.predUrls.map((url, i) => (
+                <figure
+                  key={`${current.stem}-pred-${i}`}
+                  className="flex flex-col gap-2 items-center"
+                >
+                  <Image
+                    src={url}
+                    alt={`prediction mask ${i}`}
+                    className="max-w-[20vw] h-auto rounded border cursor-crosshair"
+                    onClick={(e) => handleClickMask(e, current)}
+                    role="img"
+                    width={512}
+                    height={512}
+                    draggable={false}
+                    unoptimized
+                  />
                   <figcaption className="text-sm text-gray-500">
                     Prediction {i}
                   </figcaption>
                 </figure>
-              ),
+              ))
+            ) : (
+              <div className="text-gray-500 text-sm">No predictions found.</div>
             )}
           </div>
 
@@ -202,7 +352,7 @@ export default function Home() {
         Use ← and → to navigate
       </div>
       <div className="text-xs text-gray-500 text-center">
-        Classes: {LABELS.join(", ")}
+        Classes ({labelList.length}): {labelSummary}
       </div>
     </div>
   );
