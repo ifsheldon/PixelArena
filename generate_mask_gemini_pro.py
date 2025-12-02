@@ -17,7 +17,7 @@ if __name__ == "__main__":
             rpm=12,  # tier 1 -> RPM = 20 with a bit buffer
             model="gemini-3-pro-image-preview",
             image_dir=Path("./eval-set/celeb/images-150"),
-            output_dir=Path("./results/gemini-pro-150"),
+            output_dir=Path("./results/celeb/gemini-pro-150"),
             color_palette_path=Path("./label_palettes/seg_labels_celeb.png"),
             attempts=5,
             label_colors=None,

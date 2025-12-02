@@ -5,7 +5,7 @@ This script checks the results by checking if the expected files are present in 
 import os
 
 SOURCE_DIR = "./eval-set/celeb/images-150"
-TARGET_DIR = "./results/uni-moe-2-image-150"
+TARGET_DIR = "./results/celeb/uni-moe-2-image-150"
 ATTEMPTS = 1
 
 
