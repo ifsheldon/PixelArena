@@ -37,15 +37,19 @@ async def gen_mask(
 ):
     original_file_name = original_image_path.stem
     save_raw_file_path = f"{output_dir}/{original_file_name}.mask.{attempt_idx}.raw.jpg"
-    save_pmode_file_path = f"{output_dir}/{original_file_name}.mask.{attempt_idx}.pred.png"
+    save_pmode_file_path = (
+        f"{output_dir}/{original_file_name}.mask.{attempt_idx}.pred.png"
+    )
 
     raw_file_exists = os.path.exists(save_raw_file_path)
     pmode_file_exists = os.path.exists(save_pmode_file_path)
 
     if raw_file_exists and pmode_file_exists:
-        logger.info(f"Mask for {original_file_name} already exists at {save_raw_file_path} and {save_pmode_file_path}")
+        logger.info(
+            f"Mask for {original_file_name} already exists at {save_raw_file_path} and {save_pmode_file_path}"
+        )
         return
-    
+
     if raw_file_exists and not pmode_file_exists:
         mask_pmode = mask_raw_to_pmode(save_raw_file_path, dataset, label_colors)
         mask_pmode.save(save_pmode_file_path)
@@ -112,7 +116,9 @@ async def gen_mask(
         for part in response.parts:
             if image := part.as_image():
                 image.save(save_raw_file_path)
-                mask_pmode = mask_raw_to_pmode(save_raw_file_path, dataset, label_colors)
+                mask_pmode = mask_raw_to_pmode(
+                    save_raw_file_path, dataset, label_colors
+                )
                 mask_pmode.save(save_pmode_file_path)
             else:
                 pass
