@@ -1,2 +1,3 @@
 - This project use `uv` to manage Python dependencies. Never use `pip` to install dependencies. Use `uv add` to add dependencies.
 - If you want to run a Python script, use `uv run python <script_name>.py` to run it.
+- The frontend project is in the `frontend` directory. You should use `bun` to run the frontend project and manage dependencies. Never use `npm` or `yarn`.
