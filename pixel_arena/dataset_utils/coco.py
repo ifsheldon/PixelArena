@@ -1,4 +1,6 @@
 from typing import List
+import torch
+from PIL import Image
 
 LABELS = [
     "other",
@@ -410,6 +412,8 @@ LABEL_COLORS = [
     [250, 141, 255],  # id 200: rug
 ]
 
+LABEL_COLOR_TENSOR = torch.tensor(LABEL_COLORS, dtype=torch.uint8)
+
 
 PROMPT_TEMPLATE = """I want you to do semantic segmentation based on the given category labels.
 
@@ -443,3 +447,36 @@ def get_prompt(label_colors: List[List[int]] = None) -> str:
     label_encodings = "\n".join(string)
     prompt = PROMPT_TEMPLATE.format(label_encodings=label_encodings)
     return prompt
+
+
+def integer_mask_to_pil(mask: torch.Tensor) -> Image.Image:
+    """
+    Turn a mask tensor into a PIL image.
+
+    Args:
+        mask: Mask tensor.
+
+    Returns:
+        PIL image.
+    """
+    assert mask.ndim == 2 or mask.ndim == 3, (
+        f"Mask should be (H, W) or (1, H, W), got {mask.shape}"
+    )
+    if mask.ndim == 3:
+        assert mask.shape[0] == 1, (
+            f"Mask should be (1, H, W) or (H, W), got {mask.shape}"
+        )
+        mask = mask.squeeze(0)
+
+    assert not (
+        torch.is_floating_point(mask)
+        or torch.is_complex(mask)
+        or mask.dtype == torch.bool
+    ), "Mask should be integers"
+    assert mask.max() <= 200, "Mask should be <= 200"
+    mask_np = mask.numpy().astype("uint8")
+    mask_pil = Image.fromarray(mask_np, mode="P")
+    flat_palette = LABEL_COLOR_TENSOR.flatten().tolist()
+    flat_palette += [0] * (768 - len(flat_palette))
+    mask_pil.putpalette(flat_palette)
+    return mask_pil
