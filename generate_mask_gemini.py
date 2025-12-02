@@ -18,7 +18,7 @@ if __name__ == "__main__":
         batch_gen_mask(
             rpm=480,  # tier 1 -> RPM = 500 with a bit buffer
             model="gemini-2.5-flash-image",
-            image_dir=Path("./eval-set/images-150"),
+            image_dir=Path("./eval-set/celeb/images-150"),
             output_dir=Path("./results/gemini-150"),
             color_palette_path=Path("./label_palettes/seg_labels_celeb.png"),
             attempts=5,

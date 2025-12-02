@@ -10,8 +10,8 @@ from tqdm import tqdm
 
 def main():
     # Directories
-    input_dir = "./eval-set/masks-512"
-    output_dir = "./eval-set/masks-1024"
+    input_dir = "./eval-set/celeb/masks-512"
+    output_dir = "./eval-set/celeb/masks-1024"
     target_size = (1024, 1024)
 
     # Create output directory if it doesn't exist

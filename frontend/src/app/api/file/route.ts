@@ -7,7 +7,7 @@ function resolvePath(
   kind: string,
 ): { abs: string; contentType: string } | undefined {
   const testResultDir = path.resolve(process.cwd(), "../test");
-  const evalSetDir = path.resolve(process.cwd(), "../eval-set/");
+  const evalSetDir = path.resolve(process.cwd(), "../eval-set/celeb");
 
   if (!/^[a-zA-Z0-9_-]+$/.test(stem)) return undefined;
   switch (kind) {

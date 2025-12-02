@@ -34,9 +34,11 @@ def process_pipeline():
 
     print(f"Using mask source directory: {mask_src_dir}")
 
+    dst_dir = Path("eval-set/coco")
+
     # Destination directories
-    img_dst_dir = base_dir / "val2017-150-processed"
-    mask_dst_dir = base_dir / "semantic_segmentation_val2017_processed"
+    img_dst_dir = dst_dir / "images-150"
+    mask_dst_dir = dst_dir / "masks-1024"
 
     # Clean up and recreate destination directories if they exist (user said they deleted old results, but good to be safe/consistent)
     if img_dst_dir.exists():
