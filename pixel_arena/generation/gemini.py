@@ -47,6 +47,8 @@ async def gen_mask(
         return
     
     if raw_file_exists and not pmode_file_exists:
+        mask_pmode = mask_raw_to_pmode(save_raw_file_path, dataset, label_colors)
+        mask_pmode.save(save_pmode_file_path)
         return
 
     save_response_path = (
