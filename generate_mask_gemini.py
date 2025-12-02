@@ -7,6 +7,7 @@ from pixel_arena.generation.gemini import batch_gen_mask
 from pathlib import Path
 import asyncio
 import logging
+from clients import gemini_clients
 
 
 logger = logging.getLogger("generate_mask_gemini")
@@ -25,27 +26,6 @@ if __name__ == "__main__":
             label_colors=None,
             save_response=False,
             dataset="celeb",
-            clients=[
-                # LF project default
-                genai.Client(
-                    api_key="AIzaSyD00P48lTw9vZy2wEVGxxbsWJRJrTUVr3o",
-                ).aio,
-                # LF project openevolve
-                genai.Client(
-                    api_key="AIzaSyC54rwWvN69P0scm1vEd4YRzk7smrPWzJs",
-                ).aio,
-                # Sizhe
-                genai.Client(
-                    api_key="AIzaSyCqVg3CbqjJS1CERlnuz0pI36Y1JPEBEtI",
-                ).aio,
-                # LF project segmentation
-                genai.Client(
-                    api_key="AIzaSyBGNIqo0lAhUArzXJnFgBibDzZ4BF_nmsc",
-                ).aio,
-                # LF project test
-                genai.Client(
-                    api_key="AIzaSyBR4Hu6mfoHmJl9tT2RAZbcUujqsmt3VNA",
-                ).aio,
-            ],
+            clients=gemini_clients,
         )
     )
