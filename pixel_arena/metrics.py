@@ -67,6 +67,17 @@ class RunInfo:
             self.label_num = 201
         assert self.ref_masks_path.exists()
 
+    def __str__(self) -> str:
+        return f"""
+RunInfo:
+    model_name: {self.model_name}
+    small_mask: {self.small_mask}
+    pred_mask_path: {self.pred_mask_path}
+    attempts: {self.attempts}
+    dataset: {self.dataset}
+    save_metric_path: {self.save_metric_path}
+"""
+
     def get_original_image(self, image_id: str) -> Image.Image:
         return get_image(self.image_path / f"{image_id}.jpg", return_image=True)
 
@@ -98,7 +109,12 @@ class RunInfo:
             masks.append(mask)
         return masks
 
-    def calculate_and_save_metrics(self):
+    def calculate_and_save_metrics(self, force_recalculate: bool = False):
+        if not force_recalculate and self.save_metric_path.exists():
+            self.load_metrics()
+            print(f"Metrics already calculated.\n{self}")
+            return
+        
         f1_scores = []
         iou_scores = []
         dice_scores = []
