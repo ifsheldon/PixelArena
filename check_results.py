@@ -86,9 +86,9 @@ def check_missing_files():
                 missing_files.append(pred_mask)
 
     if missing_files:
+        print(f"\nFound {len(missing_files)} missing files:")
         for filename in sorted(missing_files):
             print(filename)
-        print(f"\nFound {len(missing_files)} missing files:")
     else:
         print("\nAll expected files are present.")
 
