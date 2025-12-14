@@ -424,7 +424,7 @@ The label encodings are
 ```
 
 Please draw a colorful mask, given the photo (the first image), the color palette and the label encodings. 
-For your convenience, I've also give you a color palette (the rest of the images) for the label encodings.
+For your convenience, I've also given you a color palette (the rest of the images) for the label encodings.
 
 You can first recognize all categories of all subjects in the first image and then draw the mask. Note that the first category `other` is used only when there're no related category labels for a subject in the image.
 """
