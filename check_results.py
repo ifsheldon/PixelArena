@@ -2,32 +2,36 @@
 This script checks the results by checking if the expected files are present in the target directory.
 """
 
+import json
 import os
 
-SOURCE_DIR = "./eval-set/celeb/images-150"
+ID_JSON_PATH = "./eval-set/celeb/id-150.json"
 TARGET_DIR = "./results/celeb/uni-moe-2-image-150"
 ATTEMPTS = 1
 
 
+def get_expected_ids():
+    if not os.path.exists(ID_JSON_PATH):
+        print(f"Error: JSON file {ID_JSON_PATH} does not exist.")
+        return set()
+
+    with open(ID_JSON_PATH, "r") as f:
+        ids = json.load(f)
+    return set(ids)
+
+
 def find_missing_ids():
-    # Check if directories exist
-    if not os.path.exists(SOURCE_DIR):
-        print(f"Error: Source directory {SOURCE_DIR} does not exist.")
-        return
+    # Check if target directory exists
     if not os.path.exists(TARGET_DIR):
         print(f"Error: Target directory {TARGET_DIR} does not exist.")
         return
 
-    # Get IDs from source directory
-    source_ids = set()
-    for filename in os.listdir(SOURCE_DIR):
-        if filename.startswith("."):
-            continue
-        # ID is the part before the first dot
-        file_id = filename.split(".")[0]
-        source_ids.add(file_id)
+    # Get IDs from JSON
+    source_ids = get_expected_ids()
+    if not source_ids:
+        return
 
-    print(f"Found {len(source_ids)} IDs in {SOURCE_DIR}")
+    print(f"Found {len(source_ids)} IDs in {ID_JSON_PATH}")
 
     # Get IDs from target directory
     target_ids = set()
@@ -49,22 +53,15 @@ def find_missing_ids():
 
 
 def check_missing_files():
-    # Check if directories exist
-    if not os.path.exists(SOURCE_DIR):
-        print(f"Error: Source directory {SOURCE_DIR} does not exist.")
-        return
+    # Check if target directory exists
     if not os.path.exists(TARGET_DIR):
         print(f"Error: Target directory {TARGET_DIR} does not exist.")
         return
 
-    # Get expected IDs from source directory
-    expected_ids = set()
-    for filename in os.listdir(SOURCE_DIR):
-        if filename.startswith("."):
-            continue
-        # ID is the part before the first dot
-        file_id = filename.split(".")[0]
-        expected_ids.add(file_id)
+    # Get expected IDs from JSON
+    expected_ids = get_expected_ids()
+    if not expected_ids:
+        return
 
     print(f"Checking {len(expected_ids)} IDs for required files...")
 
