@@ -18,3 +18,4 @@ temp/
 results/
 coco-dataset/
 clients.py
+.oxenignore
