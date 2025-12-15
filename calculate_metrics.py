@@ -5,6 +5,7 @@ from pixel_arena.metrics import RunInfo
 
 gemini_pro_run_celeb = RunInfo(
     model_name="gemini-pro",
+    model_code_name="gmn3",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/gemini-pro-150"),
     attempts=5,
@@ -12,6 +13,7 @@ gemini_pro_run_celeb = RunInfo(
 )
 gemini_pro_shuffled_run_celeb = RunInfo(
     model_name="gemini-pro-shuffled",
+    model_code_name="gmn3-shuffled",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/gemini-pro-150-shuffled-label-colors"),
     attempts=5,
@@ -19,6 +21,7 @@ gemini_pro_shuffled_run_celeb = RunInfo(
 )
 gemini_run_celeb = RunInfo(
     model_name="gemini",
+    model_code_name="gmn25",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/gemini-150"),
     attempts=5,
@@ -26,6 +29,7 @@ gemini_run_celeb = RunInfo(
 )
 gpt_run_celeb = RunInfo(
     model_name="gpt-image",
+    model_code_name="gpti",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/gpt-image-150"),
     attempts=5,
@@ -33,6 +37,7 @@ gpt_run_celeb = RunInfo(
 )
 sam3_run_celeb = RunInfo(
     model_name="sam3",
+    model_code_name="sam3",
     small_mask=True,
     pred_mask_path=Path("./results/celeb/sam3-150"),
     attempts=1,
@@ -40,6 +45,7 @@ sam3_run_celeb = RunInfo(
 )
 segface_run_celeb = RunInfo(
     model_name="segface",
+    model_code_name="segface",
     small_mask=True,
     pred_mask_path=Path("./results/celeb/segface-150"),
     attempts=1,
@@ -47,6 +53,7 @@ segface_run_celeb = RunInfo(
 )
 uni_moe_2_image_run_celeb = RunInfo(
     model_name="uni-moe-2-image",
+    model_code_name="unimoe2-image",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/uni-moe-2-image-150"),
     attempts=1,
@@ -54,6 +61,7 @@ uni_moe_2_image_run_celeb = RunInfo(
 )
 uni_moe_2_omni_run_celeb = RunInfo(
     model_name="uni-moe-2-omni",
+    model_code_name="unimoe2-omni",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/uni-moe-2-omni-150"),
     attempts=1,
@@ -62,6 +70,7 @@ uni_moe_2_omni_run_celeb = RunInfo(
 
 emu35_run_celeb = RunInfo(
     model_name="emu35",
+    model_code_name="emu35",
     small_mask=False,
     pred_mask_path=Path("./results/celeb/emu35-150"),
     attempts=1,
@@ -69,19 +78,20 @@ emu35_run_celeb = RunInfo(
 )
 
 celeb_runs = [
-    gemini_pro_run_celeb,
-    gemini_pro_shuffled_run_celeb,
-    gemini_run_celeb,
-    gpt_run_celeb,
     uni_moe_2_image_run_celeb,
     uni_moe_2_omni_run_celeb,
+    emu35_run_celeb,
+    gemini_run_celeb,
+    gemini_pro_run_celeb,
+    gemini_pro_shuffled_run_celeb,
+    gpt_run_celeb,
     sam3_run_celeb,
     segface_run_celeb,
-    emu35_run_celeb,
 ]
 
 gemini_pro_run_coco = RunInfo(
     model_name="gemini-pro",
+    model_code_name="gmn3",
     small_mask=False,
     pred_mask_path=Path("./results/coco/gemini-pro-150"),
     attempts=5,
@@ -89,6 +99,7 @@ gemini_pro_run_coco = RunInfo(
 )
 gemini_run_coco = RunInfo(
     model_name="gemini",
+    model_code_name="gmn25",
     small_mask=False,
     pred_mask_path=Path("./results/coco/gemini-150"),
     attempts=5,

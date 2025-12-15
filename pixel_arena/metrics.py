@@ -26,12 +26,14 @@ class RunInfo:
         self,
         *,
         model_name: str,
+        model_code_name: str,
         small_mask: bool,
         pred_mask_path: Path,
         attempts: int,
         dataset: Literal["celeb", "coco"],
     ):
         self.model_name = model_name
+        self.model_code_name = model_code_name
         self.small_mask = small_mask
         self.pred_mask_path = pred_mask_path
         assert pred_mask_path.exists()
