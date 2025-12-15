@@ -60,19 +60,10 @@ uni_moe_2_omni_run_celeb = RunInfo(
     dataset="celeb",
 )
 
-## unusable because the data is rectangle
-# emu35_run_celeb = RunInfo(
-#     model_name="emu35",
-#     small_mask=True,
-#     pred_mask_path=Path("./results/celeb/emu35-150"),
-#     attempts=1,
-#     dataset="celeb",
-# )
-
-emu35_image_run_celeb = RunInfo(
-    model_name="emu35-image",
+emu35_run_celeb = RunInfo(
+    model_name="emu35",
     small_mask=False,
-    pred_mask_path=Path("./results/celeb/emu35-image-150"),
+    pred_mask_path=Path("./results/celeb/emu35-150"),
     attempts=1,
     dataset="celeb",
 )
@@ -86,7 +77,7 @@ celeb_runs = [
     uni_moe_2_omni_run_celeb,
     sam3_run_celeb,
     segface_run_celeb,
-    emu35_image_run_celeb
+    emu35_run_celeb,
 ]
 
 gemini_pro_run_coco = RunInfo(
@@ -109,8 +100,10 @@ coco_runs = [
     gemini_run_coco,
 ]
 
+
 def calc(run: RunInfo):
     run.calculate_and_save_metrics()
+
 
 if __name__ == "__main__":
     runs = celeb_runs
