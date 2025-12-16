@@ -105,10 +105,19 @@ gemini_run_coco = RunInfo(
     attempts=5,
     dataset="coco",
 )
+oneformer_run_coco = RunInfo(
+    model_name="oneformer",
+    model_code_name="1former",
+    small_mask=False,
+    pred_mask_path=Path("./results/coco/oneformer-150"),
+    attempts=1,
+    dataset="coco",
+)
 
 coco_runs = [
-    gemini_pro_run_coco,
     gemini_run_coco,
+    gemini_pro_run_coco,
+    oneformer_run_coco,
 ]
 
 
@@ -117,7 +126,7 @@ def calc(run: RunInfo):
 
 
 if __name__ == "__main__":
-    runs = celeb_runs
+    runs = coco_runs
     print(f"Calculating metrics for {len(runs)} runs")
     with Pool(len(runs)) as pool:
         pool.map(calc, runs)
