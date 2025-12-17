@@ -30,6 +30,7 @@ const PRED_FILE_RE =
   /^(?<stem>[a-zA-Z0-9_-]+)\.mask\.(?<attempt>\d+)\.pred\.png$/;
 
 const RUN_INCLUDE_TOKEN = "-150";
+const PREFERRED_RUN = "gemini-pro-150";
 
 const listRuns = async (dataset: DatasetId): Promise<string[]> => {
   const config = DATASETS[dataset];
@@ -94,7 +95,9 @@ export async function GET(request: Request): Promise<NextResponse> {
     const requestedRun =
       runParam && RUN_RE.test(runParam) && runs.includes(runParam)
         ? runParam
-        : runs[0];
+        : runs.includes(PREFERRED_RUN)
+          ? PREFERRED_RUN
+          : runs[0];
     const runDir = path.join(
       RESULTS_ROOT,
       DATASETS[dataset].resultsSubDir,

@@ -21,7 +21,7 @@ export const DATASETS: Record<DatasetId, DatasetConfig> = {
     label: "CelebAMask-HQ",
     evalSubDir: "celeb",
     resultsSubDir: "celeb",
-    imageSubDirs: ["images", "images-150"],
+    imageSubDirs: ["images-150"],
     imageExtension: ".jpg",
     imageContentType: "image/jpeg",
     maskSubDir: "masks-1024",
