@@ -116,7 +116,7 @@ RunInfo:
             self.load_metrics()
             print(f"Metrics already calculated.\n{self}")
             return
-        
+
         f1_scores = []
         iou_scores = []
         dice_scores = []
