@@ -34,18 +34,15 @@ export default function ProjectPage() {
               </div>
             </div>
 
-            {/* Code Button - Disabled */}
-            <div className="relative group">
-              <button 
-                className="inline-flex items-center px-6 py-2 border border-gray-300 text-base font-medium rounded-full shadow-sm text-gray-700 bg-white opacity-50 cursor-not-allowed"
-                disabled
-              >
-                Code
-              </button>
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                Coming soon
-              </div>
-            </div>
+            {/* Code Button */}
+            <a 
+              href="https://github.com/ifsheldon/pixel-arena-data-processing" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-2 border border-gray-300 text-base font-medium rounded-full shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Code
+            </a>
 
             {/* Gallery Button */}
             <a 
