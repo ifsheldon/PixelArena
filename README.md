@@ -11,6 +11,7 @@ Setup project:
 4. Run `uv run poe setup-frontend` to install frontend dependencies.
 5. (Optional) install `oxen`: https://docs.oxen.ai/getting-started/install
 6. (Optional) run `oxen clone https://hub.oxen.ai/ifsheldon/mllm-segmentation-data` to get all results.
+   * remember to run `ln -s mllm-segmentation-data/results results` if you need to run the frontend.
 
 Run frontend: `uv run poe run-frontend`
 
