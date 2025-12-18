@@ -1,10 +1,16 @@
 "use client";
 
-import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import type { MouseEvent } from "react";
-import { useCallback, useEffect, useMemo, useState, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import {
+  type MouseEvent,
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import {
   DATASET_OPTIONS,
   type DatasetId,
@@ -69,18 +75,20 @@ function CompareContent() {
         setAvailableRuns(data.runs ?? []);
         setActiveRun(data.run ?? null);
         setActiveDataset(data.dataset);
-        
+
         // Handle stem parameter
         const stemParam = searchParams.get("stem");
         if (stemParam) {
-           const foundIdx = (data.samples ?? []).findIndex(s => s.stem === stemParam);
-           if (foundIdx !== -1) {
-             setIdx(foundIdx);
-           } else {
-             setIdx(0);
-           }
+          const foundIdx = (data.samples ?? []).findIndex(
+            (s) => s.stem === stemParam,
+          );
+          if (foundIdx !== -1) {
+            setIdx(foundIdx);
+          } else {
+            setIdx(0);
+          }
         } else {
-           setIdx(0);
+          setIdx(0);
         }
 
         setInfoText("");
@@ -113,7 +121,7 @@ function CompareContent() {
       cancelled = true;
       controller.abort();
     };
-  }, [selectedDataset, selectedRun]);
+  }, [selectedDataset, selectedRun, searchParams]);
 
   const current = samples[idx] as Sample | undefined;
   const datasetName = getDatasetLabel(activeDataset);
@@ -267,82 +275,47 @@ function CompareContent() {
         ) : null}
 
         {current ? (
-        <div className="flex flex-col gap-4">
-          <div className="text-xs text-gray-500 text-center leading-tight">
-            <div>Use ← and → to navigate</div>
-            <div>
-              Click on any mask to inspect classes across all masks at that
-              coordinate.
+          <div className="flex flex-col gap-4">
+            <div className="text-xs text-gray-500 text-center leading-tight">
+              <div>Use ← and → to navigate</div>
+              <div>
+                Click on any mask to inspect classes across all masks at that
+                coordinate.
+              </div>
             </div>
-          </div>
 
-          {/* Top Row: Image and Reference */}
-          <div className="flex flex-row gap-4 justify-center">
-            <figure className="flex flex-col gap-2 items-center">
-              {current.imageUrl ? (
-                <Image
-                  src={current.imageUrl}
-                  alt="input"
-                  className="max-w-[30vw] h-auto rounded border"
-                  width={512}
-                  height={512}
-                  draggable={false}
-                  unoptimized
-                />
-              ) : (
-                <div className="w-[30vw] aspect-square border rounded grid place-items-center text-gray-500">
-                  No image
-                </div>
-              )}
-              <figcaption className="text-sm text-gray-500">
-                Image
-                <div className="text-xs font-mono text-black mt-1">
-                  id = {current.stem}
-                </div>
-              </figcaption>
-            </figure>
-
-            <figure className="flex flex-col gap-2 items-center">
-              {current.refUrl ? (
-                <Image
-                  src={current.refUrl}
-                  alt="reference mask"
-                  className="max-w-[30vw] h-auto rounded border cursor-crosshair"
-                  onClick={(e) => handleClickMask(e, current)}
-                  role="img"
-                  width={512}
-                  height={512}
-                  draggable={false}
-                  unoptimized
-                />
-              ) : (
-                <div className="w-[30vw] aspect-square border rounded grid place-items-center text-gray-500">
-                  No reference
-                </div>
-              )}
-              <figcaption className="text-sm text-gray-500">
-                Reference
-                {pixelLabels.ref && (
-                  <div className="text-xs font-mono text-black mt-1">
-                    {pixelLabels.ref}
+            {/* Top Row: Image and Reference */}
+            <div className="flex flex-row gap-4 justify-center">
+              <figure className="flex flex-col gap-2 items-center">
+                {current.imageUrl ? (
+                  <Image
+                    src={current.imageUrl}
+                    alt="input"
+                    className="max-w-[30vw] h-auto rounded border"
+                    width={512}
+                    height={512}
+                    draggable={false}
+                    unoptimized
+                  />
+                ) : (
+                  <div className="w-[30vw] aspect-square border rounded grid place-items-center text-gray-500">
+                    No image
                   </div>
                 )}
-              </figcaption>
-            </figure>
-          </div>
+                <figcaption className="text-sm text-gray-500">
+                  Image
+                  <div className="text-xs font-mono text-black mt-1">
+                    id = {current.stem}
+                  </div>
+                </figcaption>
+              </figure>
 
-          {/* Bottom Row: Predictions */}
-          <div className="flex flex-row gap-4 justify-center flex-wrap">
-            {(current.predUrls ?? []).length ? (
-              current.predUrls.map((url, i) => (
-                <figure
-                  key={`${current.stem}-pred-${i}`}
-                  className="flex flex-col gap-2 items-center"
-                >
+              <figure className="flex flex-col gap-2 items-center">
+                {current.refUrl ? (
                   <Image
-                    src={url}
-                    alt={`prediction mask ${i}`}
-                    className="max-w-[20vw] h-auto rounded border cursor-crosshair"
+                    src={current.refUrl}
+                    alt="reference mask"
+                    className="max-w-[30vw] h-auto rounded border cursor-crosshair"
                     onClick={(e) => handleClickMask(e, current)}
                     role="img"
                     width={512}
@@ -350,30 +323,65 @@ function CompareContent() {
                     draggable={false}
                     unoptimized
                   />
-                  <figcaption className="text-sm text-gray-500">
-                    Prediction {i}
-                    {pixelLabels[`pred-${i}`] && (
-                      <div className="text-xs font-mono text-black mt-1">
-                        {pixelLabels[`pred-${i}`]}
-                      </div>
-                    )}
-                  </figcaption>
-                </figure>
-              ))
-            ) : (
-              <div className="text-gray-500 text-sm">No predictions found.</div>
-            )}
-          </div>
+                ) : (
+                  <div className="w-[30vw] aspect-square border rounded grid place-items-center text-gray-500">
+                    No reference
+                  </div>
+                )}
+                <figcaption className="text-sm text-gray-500">
+                  Reference
+                  {pixelLabels.ref && (
+                    <div className="text-xs font-mono text-black mt-1">
+                      {pixelLabels.ref}
+                    </div>
+                  )}
+                </figcaption>
+              </figure>
+            </div>
 
-          <div className="text-sm text-center">
-            {infoText}
-          </div>
-        </div>
-      ) : (
-        <div className="text-gray-500">No samples found.</div>
-      )}
+            {/* Bottom Row: Predictions */}
+            <div className="flex flex-row gap-4 justify-center flex-wrap">
+              {(current.predUrls ?? []).length ? (
+                current.predUrls.map((url, i) => (
+                  <figure
+                    key={`${current.stem}-pred-${i}`}
+                    className="flex flex-col gap-2 items-center"
+                  >
+                    <Image
+                      src={url}
+                      alt={`prediction mask ${i}`}
+                      className="max-w-[20vw] h-auto rounded border cursor-crosshair"
+                      onClick={(e) => handleClickMask(e, current)}
+                      role="img"
+                      width={512}
+                      height={512}
+                      draggable={false}
+                      unoptimized
+                    />
+                    <figcaption className="text-sm text-gray-500">
+                      Prediction {i}
+                      {pixelLabels[`pred-${i}`] && (
+                        <div className="text-xs font-mono text-black mt-1">
+                          {pixelLabels[`pred-${i}`]}
+                        </div>
+                      )}
+                    </figcaption>
+                  </figure>
+                ))
+              ) : (
+                <div className="text-gray-500 text-sm">
+                  No predictions found.
+                </div>
+              )}
+            </div>
 
-      <div className="w-full max-w-4xl text-xs text-gray-500">
+            <div className="text-sm text-center">{infoText}</div>
+          </div>
+        ) : (
+          <div className="text-gray-500">No samples found.</div>
+        )}
+
+        <div className="w-full max-w-4xl text-xs text-gray-500">
           <h3 className="text-center mb-2">Classes ({labelList.length})</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2 text-left p-4 border rounded bg-gray-50">
             {labelList.map((label, i) => (
@@ -392,6 +400,7 @@ function CompareContent() {
           Image List
         </span>
         <button
+          type="button"
           onClick={() => setIsMenuOpen(true)}
           className="p-3 bg-blue-600 text-white rounded-full shadow-lg hover:bg-blue-700 transition-colors"
           aria-label="Open sample list"
@@ -404,6 +413,7 @@ function CompareContent() {
             stroke="currentColor"
             className="w-5 h-5"
           >
+            <title>List icon</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -431,6 +441,7 @@ function CompareContent() {
             stroke="currentColor"
             className="w-5 h-5"
           >
+            <title>Back icon</title>
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
@@ -443,13 +454,17 @@ function CompareContent() {
       {/* Slide-over Menu */}
       <div
         className={`fixed inset-0 z-50 transition-opacity duration-300 ${
-          isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          isMenuOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
         }`}
       >
         {/* Backdrop */}
-        <div
-          className="absolute inset-0 bg-black/50"
+        <button
+          type="button"
+          className="absolute inset-0 bg-black/50 w-full h-full cursor-default"
           onClick={() => setIsMenuOpen(false)}
+          aria-label="Close menu"
         />
 
         {/* Panel */}
@@ -459,8 +474,11 @@ function CompareContent() {
           }`}
         >
           <div className="p-4 border-b flex items-center justify-between bg-gray-50">
-            <h2 className="font-semibold text-lg">{datasetName} ({samples.length})</h2>
+            <h2 className="font-semibold text-lg">
+              {datasetName} ({samples.length})
+            </h2>
             <button
+              type="button"
               onClick={() => setIsMenuOpen(false)}
               className="p-2 text-gray-500 hover:text-gray-700 rounded-full hover:bg-gray-200 transition-colors"
               aria-label="Close menu"
@@ -473,6 +491,7 @@ function CompareContent() {
                 stroke="currentColor"
                 className="w-6 h-6"
               >
+                <title>Close icon</title>
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
@@ -488,6 +507,7 @@ function CompareContent() {
                 {samples.map((sample, i) => (
                   <li key={sample.stem}>
                     <button
+                      type="button"
                       onClick={() => {
                         setIdx(i);
                         setIsMenuOpen(false);
@@ -522,4 +542,3 @@ export default function Compare() {
     </Suspense>
   );
 }
-

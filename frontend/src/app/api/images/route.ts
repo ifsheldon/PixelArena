@@ -1,7 +1,12 @@
 import { promises as fs } from "node:fs";
 import path from "node:path";
 import { NextResponse } from "next/server";
-import { DATASETS, type DatasetId, DEFAULT_DATASET, isDatasetId } from "@/lib/datasets";
+import {
+  DATASETS,
+  type DatasetId,
+  DEFAULT_DATASET,
+  isDatasetId,
+} from "@/lib/datasets";
 
 const PROJECT_ROOT = path.resolve(process.cwd(), "..");
 const EVAL_ROOT = path.join(PROJECT_ROOT, "eval-set");
@@ -34,7 +39,7 @@ export async function GET(request: Request): Promise<NextResponse> {
         for (const entry of entries) {
           if (!entry.isFile()) continue;
           if (!entry.name.endsWith(config.imageExtension)) continue;
-          
+
           const stem = entry.name.slice(0, -config.imageExtension.length);
           if (STEM_RE.test(stem)) {
             stems.add(stem);
@@ -71,4 +76,3 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: String(error) }, { status: 500 });
   }
 }
-

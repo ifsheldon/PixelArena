@@ -1,9 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState, useRef, useCallback } from "react";
-import { DATASET_OPTIONS, type DatasetId, DEFAULT_DATASET } from "@/lib/datasets";
+import Link from "next/link";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  DATASET_OPTIONS,
+  type DatasetId,
+  DEFAULT_DATASET,
+} from "@/lib/datasets";
 
 type ImageItem = {
   stem: string;
@@ -21,7 +25,7 @@ export default function Gallery() {
   const [dataset, setDataset] = useState<DatasetId>(DEFAULT_DATASET);
   const [allImages, setAllImages] = useState<ImageItem[]>([]);
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
-  const [loading, setLoading] = useState(false);
+  const [_loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const observerTarget = useRef<HTMLDivElement>(null);
 
@@ -84,7 +88,7 @@ export default function Gallery() {
     }
 
     return () => observer.disconnect();
-  }, [handleObserver, allImages]); // Re-attach if list changes, though mainly observerTarget stable
+  }, [handleObserver]);
 
   const visibleImages = allImages.slice(0, visibleCount);
 
@@ -122,6 +126,7 @@ export default function Gallery() {
               fill="currentColor"
               className="w-4 h-4 group-hover:translate-x-0.5 transition-transform"
             >
+              <title>Arrow icon</title>
               <path
                 fillRule="evenodd"
                 d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.96H3.75A.75.75 0 013 10z"
@@ -136,7 +141,6 @@ export default function Gallery() {
         {error ? (
           <div className="text-sm text-red-500 text-center mb-6">{error}</div>
         ) : null}
-
 
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-4">
           {visibleImages.map((img) => (
