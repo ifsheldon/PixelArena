@@ -76,6 +76,7 @@ export default function Gallery() {
     }
   }, []);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Re-attach if list changes, as the observer target might be conditionally rendered
   useEffect(() => {
     const observer = new IntersectionObserver(handleObserver, {
       root: null,
@@ -88,7 +89,7 @@ export default function Gallery() {
     }
 
     return () => observer.disconnect();
-  }, [handleObserver]);
+  }, [handleObserver, allImages]);
 
   const visibleImages = allImages.slice(0, visibleCount);
 
