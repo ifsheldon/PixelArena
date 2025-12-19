@@ -21,18 +21,15 @@ export default function ProjectPage() {
           </div>
 
           <div className="flex justify-center gap-4 pt-4">
-            {/* Paper Button - Disabled */}
-            <div className="relative group">
-              <button 
-                className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-blue-600 opacity-50 cursor-not-allowed"
-                disabled
-              >
-                Paper
-              </button>
-              <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                Coming soon
-              </div>
-            </div>
+            {/* Paper Button */}
+            <a 
+              href="https://arxiv.org/abs/2512.16303" 
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            >
+              Paper
+            </a>
 
             {/* Code Button */}
             <a 
