@@ -11,14 +11,14 @@ export default function ProjectPage() {
             PixelArena: A benchmark for Pixel-Precision Visual Intelligence
           </h1>
           
-          <div className="space-y-2">
+          {/* <div className="space-y-2">
             <div className="text-xl text-gray-700">
               <span>Feng Liang*</span>, <span>Sizhe Cheng*</span>, <span>Chenqi Yi</span>
             </div>
             <div className="text-lg text-gray-600">
               Nanyang Technological University
             </div>
-          </div>
+          </div> */}
 
           <div className="flex justify-center gap-4 pt-4">
             {/* Paper Button */}
