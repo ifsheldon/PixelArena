@@ -22,24 +22,24 @@ export default function ProjectPage() {
 
           <div className="flex justify-center gap-4 pt-4">
             {/* Paper Button */}
-            <a 
+            {/* <a 
               href="https://arxiv.org/abs/2512.16303" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-full shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Paper
-            </a>
+            </a> */}
 
             {/* Code Button */}
-            <a 
+            {/* <a 
               href="https://github.com/ifsheldon/pixel-arena-data-processing" 
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center px-6 py-2 border border-gray-300 text-base font-medium rounded-full shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
               Code
-            </a>
+            </a> */}
 
             {/* Gallery Button */}
             <a 
