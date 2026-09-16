@@ -4,6 +4,8 @@ Project page: https://pixelarena.reify.ing/project
 
 Web viewer for the results: https://pixelarena.reify.ing/
 
+The project page includes links to the [paper](https://arxiv.org/abs/2512.16303), [code](https://github.com/ifsheldon/pixel-arena-data-processing), and results gallery.
+
 
 ## Usage
 
