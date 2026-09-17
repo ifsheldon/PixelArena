@@ -15,7 +15,10 @@ wheels/
 test.ipynb
 temp/
 
+# Local result directories, symlinks, and archive
 results/
+/results
+/results.zip
 coco-dataset/
 clients.py
 .oxenignore

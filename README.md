@@ -20,6 +20,9 @@ Setup project:
 6. (Optional) run `oxen clone https://hub.oxen.ai/ifsheldon/mllm-segmentation-data` to get all results.
    - remember to run `ln -s mllm-segmentation-data/results results` if you need to run the frontend.
 
+Alternatively, extract a local `results.zip` containing a top-level `results/` directory from the repository root: `unzip results.zip -x '__MACOSX/*' '*/.DS_Store'`.
+The frontend reads predictions from `results/celeb` and `results/coco`, and images and reference masks from `eval-set/`, all at the repository root. Extracted results and the root `results.zip` archive are ignored by Git.
+
 Run frontend: `uv run poe run-frontend`
 
 ## Eval Set
