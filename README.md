@@ -25,6 +25,29 @@ The frontend reads predictions from `results/celeb` and `results/coco`, and imag
 
 Run frontend: `uv run poe run-frontend`
 
+### Host with Docker Compose
+
+With Docker Engine and Docker Compose installed, prepare `results/` as described above and keep `eval-set/` at the repository root. Both directories are mounted read-only into the container and must exist before startup. The image contains only the frontend; the datasets and `results.zip` are not included in the build context.
+
+From the repository root, build and start the service in the background:
+
+```sh
+sudo docker compose up -d --build --wait
+```
+
+Open `http://localhost:3011` or use the host's address on port 3011. Stop any existing local server on that port first. The container uses `restart: unless-stopped`, so it restarts after a crash or Docker restart and remains stopped after an explicit stop. Docker must start on boot for the service to return after a host reboot.
+
+```sh
+sudo docker compose logs -f frontend  # View logs
+sudo docker compose stop            # Stop until explicitly started again
+sudo docker compose up -d           # Start the existing image
+sudo docker compose down            # Remove the container and its network
+```
+
+Rerun `sudo docker compose up -d --build --wait` after code or dependency updates. Removing the container preserves the host's datasets. Omit `sudo` if your user already has Docker access.
+
+The Docker build installs dependencies with Bun's frozen lockfile and enables [Next.js standalone output](https://nextjs.org/docs/app/api-reference/config/next-config-js/output) through `NEXT_OUTPUT_STANDALONE=1`. Local `bun run build` and `bun run start-serving` continue to use the regular production build.
+
 ## Eval Set
 
 ### CelebAMask-HQ

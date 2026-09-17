@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+coverage
+results
+*.zip
+.git
+.env*
+*.log
+*.tsbuildinfo
+next-env.d.ts
+AGENTS.md
+CLAUDE.md
